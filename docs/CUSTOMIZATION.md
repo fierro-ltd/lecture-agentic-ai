@@ -1,6 +1,6 @@
 # Customization Guide
 
-This guide covers the main extension points in Lecture Agent. The system is designed so that you configure rather than fork the upstream components (Paperclip, Hermes, Temporal).
+This guide covers the main extension points in Lecture Agentic AI. The system is designed so that you configure rather than fork the upstream components (Paperclip, Hermes, Temporal).
 
 ## Extension Points Overview
 

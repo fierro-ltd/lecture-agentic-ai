@@ -1,6 +1,10 @@
-# Lecture Agent
+# Lecture Agentic AI
 
-An education-vertical multi-agent platform by EDT&Partners. Paperclip orchestrates Hermes AI agents equipped with education-specific skills (assessment review, curriculum compliance, enrollment evaluation, knowledge augmentation). HAST provides durable human-in-the-loop workflows via Temporal so that professors and administrators always have final approval over AI-generated evaluations.
+> Part of the [Lecture](https://www.edtpartners.com/lecture) ecosystem by [EDT&Partners](https://www.edtpartners.com) — The First Open-Source GenAI Framework for Education
+
+The agentic AI layer for EDT&Partners' Lecture platform. Adds autonomous multi-agent capabilities to Lecture: Paperclip orchestrates Hermes AI agents with education-specific skills (assessment review, curriculum compliance, enrollment evaluation, knowledge augmentation). HAST provides durable human-in-the-loop workflows via Temporal so that professors and administrators always have final approval over AI-generated evaluations.
+
+Used alongside Lecture's existing capabilities (Content Chat, Questions Generator, Evaluations & Rubrics, In-doc Translation) at institutions including Universidad de Deusto, Universite du Luxembourg, UFV, ESIC, and EOI.
 
 ```mermaid
 graph LR

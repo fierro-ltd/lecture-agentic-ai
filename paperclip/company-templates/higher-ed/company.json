@@ -1,6 +1,6 @@
 {
-  "name": "University AI Operations Center",
-  "goal": "Ensure academic quality, operational efficiency, and regulatory compliance across all institutional processes through AI-assisted evaluation, monitoring, and knowledge management.",
+  "name": "Lecture AI Operations Center",
+  "goal": "Extend EDT&Partners' Lecture platform with autonomous AI agents that ensure academic quality, operational efficiency, and regulatory compliance across all institutional processes.",
   "agents": [
     {
       "name": "AI Operations Director",

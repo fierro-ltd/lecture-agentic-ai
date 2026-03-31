@@ -1,8 +1,12 @@
-# Lecture Agent -- Architecture
+# Lecture Agentic AI — Architecture
+
+> Part of [EDT&Partners' Lecture platform](https://www.edtpartners.com/lecture) — extending Lecture with autonomous multi-agent capabilities.
 
 ## System Overview
 
-Lecture Agent is an education-vertical multi-agent platform built on three open-source pillars (Paperclip, Hermes, Temporal) plus custom glue and domain logic (HAST, skills, company template). The system runs as seven Docker Compose services backed by a single PostgreSQL instance hosting three databases.
+Lecture Agentic AI is the agentic AI layer for EDT&Partners' [Lecture](https://www.edtpartners.com/lecture) platform. While Lecture provides GenAI capabilities like Content Chat, Questions Generator, and Evaluations & Rubrics, this component adds autonomous multi-agent orchestration — enabling AI agents to work independently on institutional tasks with human-in-the-loop governance.
+
+Built on three open-source pillars (Paperclip, Hermes, Temporal) plus custom domain logic (HAST, education skills, company templates), the system runs as seven Docker Compose services backed by a single PostgreSQL instance hosting three databases.
 
 ```mermaid
 graph TB

@@ -1,4 +1,4 @@
-# Lecture Agent — Demo Script for EDT
+# Lecture Agentic AI — Demo Script for EDT&Partners
 
 ## Prerequisites
 - All services running: `docker compose up`
@@ -67,10 +67,15 @@ Show that the Board can pause, override, or terminate any agent.
 not bolted on. Every agent has a budget ceiling."
 
 ### 6. The Vision (2 min)
-"What you just saw is 4 agents for one institution.
-Now imagine:
-- 15 agents for a full university (add enrollment, financial aid, research)
-- Company templates: download a 'K-12 template' or 'Corporate Training template'
-- Each university gets their own Paperclip company — data isolation built in
+"What you just saw is Lecture's agentic AI layer — autonomous agents added to
+a platform already proven at Deusto, Luxembourg, UFV, ESIC, and EOI.
+
+Lecture already delivers Content Chat, Questions Generator, Evaluations & Rubrics,
+In-doc Translation, and more. Now imagine adding:
+- 15 agents per university (assessment, enrollment, financial aid, research)
+- Company templates: 'K-12 template', 'Corporate Training template'
+- Each institution gets their own agent org chart — data isolation built in
 - Custom skills per institution — Spanish universities get ANECA, US get SACSCOC
-- KAG integration: your proprietary knowledge layer as a skill every agent can use"
+- KAG integration: EDT's proprietary knowledge layer as a skill every agent uses
+
+This is Lecture's next evolution — from tools to autonomous agents."

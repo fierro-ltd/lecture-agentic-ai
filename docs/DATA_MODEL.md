@@ -2,7 +2,7 @@
 
 ## Database Overview
 
-Lecture Agent uses a single PostgreSQL 17 instance hosting three databases:
+Lecture Agentic AI uses a single PostgreSQL 17 instance hosting three databases:
 
 ```mermaid
 graph LR

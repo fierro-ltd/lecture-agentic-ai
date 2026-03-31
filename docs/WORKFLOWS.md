@@ -4,7 +4,7 @@
 
 [Temporal](https://temporal.io) is a durable execution platform. A Temporal workflow is a function that can run for hours, days, or weeks while surviving process crashes, network failures, and server restarts. State is automatically persisted -- when the worker restarts, the workflow resumes exactly where it left off.
 
-Key concepts used in Lecture Agent:
+Key concepts used in Lecture Agentic AI:
 
 | Concept | How it maps |
 |---------|-------------|
