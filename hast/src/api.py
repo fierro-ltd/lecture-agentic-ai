@@ -57,7 +57,7 @@ def _row_to_response(row) -> SubmissionResponse:
         entity_id=row[2],
         status=row[3],
         content=row[4],
-        ai_evaluation=json.loads(row[5]) if row[5] else None,
+        ai_evaluation=row[5] if isinstance(row[5], dict) else (json.loads(row[5]) if row[5] else None),
         review_decision=row[6],
         reviewer_notes=row[7],
         created_at=row[8],

@@ -7,6 +7,7 @@ The workflow is durable — survives crashes, respects timeouts, supports signal
 
 from __future__ import annotations
 
+import asyncio
 from datetime import timedelta
 from dataclasses import dataclass
 
@@ -82,11 +83,12 @@ class ReviewWorkflow:
 
         # Step 3: Wait for human review signal
         timeout = timedelta(days=settings.REVIEW_TIMEOUT_DAYS)
-        timed_out = not await workflow.wait_condition(
-            lambda: self._review_signal is not None,
-            timeout=timeout,
-        )
-        if timed_out:
+        try:
+            await workflow.wait_condition(
+                lambda: self._review_signal is not None,
+                timeout=timeout,
+            )
+        except asyncio.TimeoutError:
             await workflow.execute_activity(
                 "update_submission_status",
                 {"submission_id": input.submission_id, "status": "expired"},
