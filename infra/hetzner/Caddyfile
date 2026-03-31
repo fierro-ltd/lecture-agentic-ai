@@ -1,0 +1,19 @@
+# Caddy reverse proxy for Lecture Agent
+# Auto-provisions HTTPS via Let's Encrypt.
+#
+# Install: apt install caddy
+# Deploy:  cp Caddyfile /etc/caddy/Caddyfile && systemctl restart caddy
+
+lecture-agent.fierro.co.uk {
+    reverse_proxy localhost:3100
+}
+
+# HAST API — HTTPS on port 8443
+lecture-agent.fierro.co.uk:8443 {
+    reverse_proxy localhost:8000
+}
+
+# Temporal UI — HTTPS on port 9233
+lecture-agent.fierro.co.uk:9233 {
+    reverse_proxy localhost:8233
+}
