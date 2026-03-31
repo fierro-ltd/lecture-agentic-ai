@@ -27,17 +27,17 @@ sudo apt install -y caddy
 sudo apt install -y git
 
 # Clone repo
-sudo mkdir -p /opt/lecture-agent
-sudo chown $USER:$USER /opt/lecture-agent
-git clone git@github.com:fierro-ltd/lecture-agent.git /opt/lecture-agent
+sudo mkdir -p /opt/lecture-agentic-ai
+sudo chown $USER:$USER /opt/lecture-agentic-ai
+git clone git@github.com:fierro-ltd/lecture-agentic-ai.git /opt/lecture-agentic-ai
 
 # Setup env
-cd /opt/lecture-agent
+cd /opt/lecture-agentic-ai
 cp .env.example .env
 echo ""
 echo "=== Setup Complete ==="
 echo ""
 echo "Next steps:"
-echo "1. Edit /opt/lecture-agent/.env with your API keys"
-echo "2. Point DNS: lecture-agent.fierro.co.uk -> this server's IP"
-echo "3. Run: cd /opt/lecture-agent && ./infra/hetzner/deploy.sh"
+echo "1. Edit /opt/lecture-agentic-ai/.env with your API keys"
+echo "2. Point DNS: lecture.fierro.co.uk -> this server's IP"
+echo "3. Run: cd /opt/lecture-agentic-ai && ./infra/hetzner/deploy.sh"

@@ -34,4 +34,4 @@ services:
       - "127.0.0.1:3100:3100"
     restart: unless-stopped
     environment:
-      - PAPERCLIP_PUBLIC_URL=https://lecture-agent.fierro.co.uk
+      - PAPERCLIP_PUBLIC_URL=https://lecture.fierro.co.uk

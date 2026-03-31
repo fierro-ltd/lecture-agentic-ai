@@ -5,7 +5,7 @@ set -euo pipefail
 # Prerequisites: Docker, Docker Compose, Caddy installed on the server
 # Usage: ./deploy.sh
 
-REPO_DIR="/opt/lecture-agent"
+REPO_DIR="/opt/lecture-agentic-ai"
 COMPOSE_FILES="-f docker-compose.yml -f infra/hetzner/docker-compose.production.yml"
 
 echo "=== Lecture Agent Deployment ==="
@@ -40,6 +40,6 @@ curl -sf http://localhost:8233 > /dev/null && echo " OK" || echo " FAILED"
 
 echo ""
 echo "=== Deployment Complete ==="
-echo "Paperclip UI: https://lecture-agent.fierro.co.uk"
-echo "HAST API:     https://lecture-agent.fierro.co.uk:8443"
-echo "Temporal UI:  https://lecture-agent.fierro.co.uk:9233"
+echo "Paperclip UI: https://lecture.fierro.co.uk"
+echo "HAST API:     https://lecture.fierro.co.uk:8443"
+echo "Temporal UI:  https://lecture.fierro.co.uk:9233"

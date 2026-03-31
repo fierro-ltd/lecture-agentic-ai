@@ -1,9 +1,14 @@
-# Lecture Agent — Claude Code Instructions
+# Lecture Agentic AI — Claude Code Instructions
 
 ## What This Project Is
-A proof-of-concept for an education-vertical multi-agent platform.
-Paperclip orchestrates Hermes agents with education-specific skills.
-HAST's Temporal layer provides durable human-in-the-loop workflows.
+The agentic AI component of EDT&Partners' [Lecture](https://www.edtpartners.com/lecture) platform.
+Extends Lecture with autonomous multi-agent capabilities: Paperclip orchestrates
+Hermes agents with education-specific skills, backed by HAST's Temporal layer
+for durable human-in-the-loop workflows.
+
+**Product:** Lecture — The First Open-Source GenAI Framework for Education
+**Company:** EDT&Partners (edtpartners.com)
+**Repo:** fierro-ltd/lecture-agentic-ai (private)
 
 ## Architecture
 - Paperclip (Node.js/React) = orchestration, org chart, governance, UI

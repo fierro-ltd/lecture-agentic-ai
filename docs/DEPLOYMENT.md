@@ -19,7 +19,7 @@ For production:
 
 ```bash
 git clone <repo-url>
-cd lecture-agent
+cd lecture-agentic-ai
 cp .env.example .env
 ```
 
@@ -108,7 +108,7 @@ Two scripts run on first PostgreSQL start (via `/docker-entrypoint-initdb.d/`):
 | `HERMES_API_KEY` | hermes-gateway, hast-api, hast-worker, paperclip | `edu-platform-test-key-2026` | Shared key for Hermes Gateway auth |
 | `POSTGRES_USER` | postgres, all services | `lecture` | PostgreSQL superuser name |
 | `POSTGRES_PASSWORD` | postgres, all services | `lecture_dev` | PostgreSQL password |
-| `BETTER_AUTH_SECRET` | paperclip | `lecture-agent-dev-secret-32chars-min` | Session signing secret (min 32 chars) |
+| `BETTER_AUTH_SECRET` | paperclip | `lecture-agentic-ai-dev-secret-32chars-min` | Session signing secret (min 32 chars) |
 | `PAPERCLIP_PUBLIC_URL` | paperclip | `http://localhost:3100` | Public URL for Paperclip (used in auth callbacks) |
 | `DATABASE_URL` | hast-api, hast-worker | (constructed from PG vars) | Full PostgreSQL connection string |
 | `TEMPORAL_ADDRESS` | hast-api, hast-worker | `temporal:7233` | Temporal server gRPC address |
@@ -157,8 +157,8 @@ systemctl enable docker
 ### Step 3: Clone and configure
 
 ```bash
-git clone <repo-url> /opt/lecture-agent
-cd /opt/lecture-agent
+git clone <repo-url> /opt/lecture-agentic-ai
+cd /opt/lecture-agentic-ai
 cp .env.example .env
 # Edit .env with production values:
 #   - Strong POSTGRES_PASSWORD
@@ -216,7 +216,7 @@ Caddy automatically provisions TLS certificates via Let's Encrypt.
 ### Step 6: Start services
 
 ```bash
-cd /opt/lecture-agent
+cd /opt/lecture-agentic-ai
 docker compose up -d --build
 ```
 

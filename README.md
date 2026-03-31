@@ -35,7 +35,7 @@ graph LR
 
 ```bash
 # 1. Clone and configure
-git clone <repo-url> && cd lecture-agent
+git clone <repo-url> && cd lecture-agentic-ai
 cp .env.example .env          # Fill in API keys
 
 # 2. Start all services
