@@ -22,7 +22,7 @@ services:
   temporal:
     image: temporalio/auto-setup:1.24
     environment:
-      - DB=postgresql
+      - DB=postgres12
       - DB_PORT=5432
       - POSTGRES_USER=${POSTGRES_USER:-lecture}
       - POSTGRES_PWD=${POSTGRES_PASSWORD:-lecture_dev}
@@ -30,6 +30,8 @@ services:
       - DYNAMIC_CONFIG_FILE_PATH=config/dynamicconfig/development-sql.yaml
     ports:
       - "7233:7233"
+    volumes:
+      - ./infra/temporal/dynamicconfig.yaml:/etc/temporal/config/dynamicconfig/development-sql.yaml:ro
     depends_on:
       postgres:
         condition: service_healthy
