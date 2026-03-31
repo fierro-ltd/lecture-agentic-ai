@@ -32,8 +32,10 @@ RUN mkdir -p /paperclip && chown node:node /paperclip
 # Create Hermes config directory (for adapter to read config.yaml)
 RUN mkdir -p /root/.hermes/skills
 
-# Copy company templates
+# Copy company templates and entrypoint
 COPY paperclip/company-templates/ /app/company-templates/
+COPY paperclip/entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
 
 ENV NODE_ENV=production \
   HOME=/paperclip \
@@ -49,4 +51,4 @@ ENV NODE_ENV=production \
 VOLUME ["/paperclip"]
 EXPOSE 3100
 
-CMD ["node", "--import", "./server/node_modules/tsx/dist/loader.mjs", "server/dist/index.js"]
+CMD ["/app/entrypoint.sh"]
