@@ -4,8 +4,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     git curl ripgrep gcc python3-dev libffi-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Hermes Agent
-RUN pip install --no-cache-dir hermes-agent
+# Install Hermes Agent from GitHub (not published on PyPI)
+RUN pip install --no-cache-dir "hermes-agent @ git+https://github.com/NousResearch/hermes-agent.git"
 
 # Create Hermes home directory structure
 ENV HERMES_HOME=/root/.hermes

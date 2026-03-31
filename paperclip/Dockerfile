@@ -23,8 +23,8 @@ FROM base AS production
 WORKDIR /app
 COPY --from=build /app /app
 
-# Install Hermes Agent (required by hermes_local adapter which spawns hermes chat -q)
-RUN pip3 install --break-system-packages --no-cache-dir hermes-agent
+# Install Hermes Agent from GitHub (required by hermes_local adapter which spawns hermes chat -q)
+RUN pip3 install --break-system-packages --no-cache-dir "hermes-agent @ git+https://github.com/NousResearch/hermes-agent.git"
 
 # Create Paperclip data directory
 RUN mkdir -p /paperclip && chown node:node /paperclip
