@@ -1,0 +1,134 @@
+services:
+  # === Database (shared PostgreSQL instance, 3 databases) ===
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-lecture}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-lecture_dev}
+      POSTGRES_DB: lecture_agent
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./infra/postgres/init-multi-db.sh:/docker-entrypoint-initdb.d/01-init-multi-db.sh
+      - ./infra/postgres/init-db.sql:/docker-entrypoint-initdb.d/init-hast.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-lecture}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # === Temporal Server ===
+  temporal:
+    image: temporalio/auto-setup:1.24
+    environment:
+      - DB=postgresql
+      - DB_PORT=5432
+      - POSTGRES_USER=${POSTGRES_USER:-lecture}
+      - POSTGRES_PWD=${POSTGRES_PASSWORD:-lecture_dev}
+      - POSTGRES_SEEDS=postgres
+      - DYNAMIC_CONFIG_FILE_PATH=config/dynamicconfig/development-sql.yaml
+    ports:
+      - "7233:7233"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "temporal", "workflow", "list", "--namespace", "default"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+
+  temporal-ui:
+    image: temporalio/ui:2.31.2
+    environment:
+      - TEMPORAL_ADDRESS=temporal:7233
+    ports:
+      - "8233:8080"
+    depends_on:
+      - temporal
+
+  # === Hermes Gateway (OpenAI-compatible API for LLM inference) ===
+  hermes-gateway:
+    build:
+      context: ./hermes
+      dockerfile: Dockerfile
+    environment:
+      - HERMES_HOME=/root/.hermes
+      - OPENCODE_GO_API_KEY=${OPENCODE_GO_API_KEY}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+      - API_SERVER_KEY=${HERMES_API_KEY:-edu-platform-test-key-2026}
+    ports:
+      - "8642:8642"
+    volumes:
+      - hermes_data:/root/.hermes
+      - ./hermes/skills:/root/.hermes/skills
+      - ./hermes/config.yaml:/root/.hermes/config.yaml
+
+  # === HAST Review Service (FastAPI + Temporal Worker) ===
+  hast-api:
+    build:
+      context: ./hast
+      dockerfile: Dockerfile
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-lecture}:${POSTGRES_PASSWORD:-lecture_dev}@postgres:5432/lecture_agent
+      - TEMPORAL_ADDRESS=temporal:7233
+      - HERMES_GATEWAY_URL=http://hermes-gateway:8642
+      - HERMES_API_KEY=${HERMES_API_KEY:-edu-platform-test-key-2026}
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      temporal:
+        condition: service_healthy
+
+  hast-worker:
+    build:
+      context: ./hast
+      dockerfile: Dockerfile
+    command: python -m src.worker
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-lecture}:${POSTGRES_PASSWORD:-lecture_dev}@postgres:5432/lecture_agent
+      - TEMPORAL_ADDRESS=temporal:7233
+      - HERMES_GATEWAY_URL=http://hermes-gateway:8642
+      - HERMES_API_KEY=${HERMES_API_KEY:-edu-platform-test-key-2026}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      temporal:
+        condition: service_healthy
+
+  # === Paperclip (Orchestration + UI) ===
+  paperclip:
+    build:
+      context: .
+      dockerfile: paperclip/Dockerfile
+    environment:
+      - DATABASE_URL=postgres://${POSTGRES_USER:-lecture}:${POSTGRES_PASSWORD:-lecture_dev}@postgres:5432/paperclip
+      - PORT=3100
+      - SERVE_UI=true
+      - PAPERCLIP_DEPLOYMENT_MODE=authenticated
+      - PAPERCLIP_DEPLOYMENT_EXPOSURE=private
+      - PAPERCLIP_PUBLIC_URL=${PAPERCLIP_PUBLIC_URL:-http://localhost:3100}
+      - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET:-lecture-agent-dev-secret-32chars-min}
+      - OPENCODE_GO_API_KEY=${OPENCODE_GO_API_KEY}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+      - HERMES_API_KEY=${HERMES_API_KEY:-edu-platform-test-key-2026}
+    ports:
+      - "3100:3100"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      hermes-gateway:
+        condition: service_started
+    volumes:
+      - paperclip_data:/paperclip
+      - ./hermes/skills:/root/.hermes/skills
+      - ./hermes/config.yaml:/root/.hermes/config.yaml
+
+volumes:
+  postgres_data:
+  hermes_data:
+  paperclip_data:
