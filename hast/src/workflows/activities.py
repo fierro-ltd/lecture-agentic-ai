@@ -14,10 +14,11 @@ import psycopg2
 from temporalio import activity
 
 from src.config import settings
+from src.workflows.review_workflow import ReviewInput
 
 
 @activity.defn
-async def evaluate_submission(input) -> dict:
+async def evaluate_submission(input: ReviewInput) -> dict:
     """
     Call the Hermes gateway (OpenAI-compatible API) to evaluate a submission.
     Used when the Hermes agent hasn't already produced an evaluation.

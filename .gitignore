@@ -12,3 +12,4 @@ temporal_data/
 .venv/
 venv/
 .pytest_cache/
+.claude/

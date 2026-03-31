@@ -83,6 +83,8 @@ services:
         condition: service_healthy
       temporal:
         condition: service_healthy
+      hermes-gateway:
+        condition: service_started
 
   hast-worker:
     build:
@@ -99,6 +101,8 @@ services:
         condition: service_healthy
       temporal:
         condition: service_healthy
+      hermes-gateway:
+        condition: service_started
 
   # === Paperclip (Orchestration + UI) ===
   paperclip:

@@ -114,21 +114,32 @@ async def create_submission(payload: SubmissionCreate):
     finally:
         conn.close()
 
-    # Start Temporal workflow
-    client = await get_temporal_client()
-    await client.start_workflow(
-        ReviewWorkflow.run,
-        ReviewInput(
-            submission_id=submission_id,
-            submission_type=payload.submission_type,
-            entity_id=payload.entity_id,
-            content=payload.content,
-            criteria=payload.criteria,
-            ai_evaluation=payload.ai_evaluation,
-        ),
-        id=workflow_id,
-        task_queue=settings.TEMPORAL_TASK_QUEUE,
-    )
+    # Start Temporal workflow — if this fails, clean up the DB row
+    try:
+        client = await get_temporal_client()
+        await client.start_workflow(
+            ReviewWorkflow.run,
+            ReviewInput(
+                submission_id=submission_id,
+                submission_type=payload.submission_type,
+                entity_id=payload.entity_id,
+                content=payload.content,
+                criteria=payload.criteria,
+                ai_evaluation=payload.ai_evaluation,
+            ),
+            id=workflow_id,
+            task_queue=settings.TEMPORAL_TASK_QUEUE,
+        )
+    except Exception:
+        # Clean up orphaned DB row if workflow start fails
+        conn = get_db()
+        try:
+            with conn.cursor() as cur:
+                cur.execute("DELETE FROM hast_submissions WHERE id = %s", (submission_id,))
+                conn.commit()
+        finally:
+            conn.close()
+        raise
 
     return SubmissionResponse(
         id=submission_id,

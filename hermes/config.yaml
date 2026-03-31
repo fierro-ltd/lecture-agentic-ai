@@ -18,6 +18,7 @@ platform_toolsets:
     - memory
 
 gateway:
+  port: 8642
   platforms:
     api_server:
       enabled: true
