@@ -84,7 +84,7 @@ services:
       postgres:
         condition: service_healthy
       temporal:
-        condition: service_healthy
+        condition: service_started
       hermes-gateway:
         condition: service_started
 
@@ -102,7 +102,7 @@ services:
       postgres:
         condition: service_healthy
       temporal:
-        condition: service_healthy
+        condition: service_started
       hermes-gateway:
         condition: service_started
 
