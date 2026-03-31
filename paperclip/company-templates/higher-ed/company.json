@@ -1,0 +1,78 @@
+{
+  "name": "University AI Operations Center",
+  "goal": "Ensure academic quality, operational efficiency, and regulatory compliance across all institutional processes through AI-assisted evaluation, monitoring, and knowledge management.",
+  "agents": [
+    {
+      "name": "AI Operations Director",
+      "role": "CEO",
+      "title": "AI Operations Director",
+      "adapterType": "hermes_local",
+      "adapterConfig": {
+        "model": "glm-5",
+        "provider": "opencode-go",
+        "maxIterations": 30,
+        "timeoutSec": 300,
+        "persistSession": true,
+        "enabledToolsets": ["terminal", "file", "web", "memory"]
+      },
+      "capabilities": "Strategic coordination of all AI operations. Decomposes institutional goals into projects and tasks. Delegates to specialized agents. Reviews cross-functional work.",
+      "monthlyBudgetCents": 5000,
+      "heartbeatSchedule": "0 */4 * * *",
+      "reports": []
+    },
+    {
+      "name": "Assessment Quality Agent",
+      "role": "Engineer",
+      "title": "Assessment Quality Specialist",
+      "adapterType": "hermes_local",
+      "adapterConfig": {
+        "model": "glm-5",
+        "provider": "opencode-go",
+        "maxIterations": 50,
+        "timeoutSec": 600,
+        "persistSession": true,
+        "enabledToolsets": ["terminal", "file", "web", "memory"]
+      },
+      "capabilities": "Evaluates student submissions against rubrics. Produces structured feedback. Routes evaluations for professor review via HAST workflow. Uses the assessment-review skill.",
+      "monthlyBudgetCents": 3000,
+      "heartbeatSchedule": "0 */2 * * *",
+      "reportsTo": "AI Operations Director"
+    },
+    {
+      "name": "Curriculum Compliance Agent",
+      "role": "Engineer",
+      "title": "Curriculum Compliance Specialist",
+      "adapterType": "hermes_local",
+      "adapterConfig": {
+        "model": "glm-5",
+        "provider": "opencode-go",
+        "maxIterations": 30,
+        "timeoutSec": 300,
+        "persistSession": true,
+        "enabledToolsets": ["terminal", "file", "web", "memory"]
+      },
+      "capabilities": "Reviews syllabi and course materials against accreditation standards (ANECA, SACSCOC, QAA). Identifies compliance gaps. Uses the curriculum-compliance skill.",
+      "monthlyBudgetCents": 2000,
+      "heartbeatSchedule": "0 8 * * 1",
+      "reportsTo": "AI Operations Director"
+    },
+    {
+      "name": "Knowledge Curator Agent",
+      "role": "Engineer",
+      "title": "Knowledge Augmentation Specialist",
+      "adapterType": "hermes_local",
+      "adapterConfig": {
+        "model": "glm-5",
+        "provider": "opencode-go",
+        "maxIterations": 30,
+        "timeoutSec": 300,
+        "persistSession": true,
+        "enabledToolsets": ["terminal", "file", "web", "memory"]
+      },
+      "capabilities": "Maintains institutional knowledge graph using EDT's KAG pattern. Curates relationships between courses, standards, policies, and faculty. Uses the knowledge-augmentation skill.",
+      "monthlyBudgetCents": 2000,
+      "heartbeatSchedule": "0 6 * * *",
+      "reportsTo": "AI Operations Director"
+    }
+  ]
+}
