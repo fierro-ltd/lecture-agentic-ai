@@ -1,0 +1,14 @@
+node_modules/
+__pycache__/
+*.pyc
+.env
+.paperclip/
+.hermes/
+*.egg-info/
+dist/
+build/
+postgres_data/
+temporal_data/
+.venv/
+venv/
+.pytest_cache/
