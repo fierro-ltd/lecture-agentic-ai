@@ -8,8 +8,6 @@ from temporalio.worker import Worker
 from src.config import settings
 from src.logging_config import setup_logging
 from src.workflows.review_workflow import ReviewWorkflow
-
-setup_logging("hast-worker")
 from src.workflows.activities import (
     evaluate_submission,
     update_submission_status,
@@ -17,6 +15,7 @@ from src.workflows.activities import (
 )
 from src.workflows.notifications import send_notification
 
+setup_logging("hast-worker")
 logger = logging.getLogger(__name__)
 
 

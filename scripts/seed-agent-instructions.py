@@ -156,7 +156,7 @@ def seed(conn, table: str, name_col: str, instr_col: str, souls: dict[str, str])
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
     # Fetch all rows from the target table (only the columns we need)
-    cur.execute(f'SELECT id, {name_col}, {instr_col} FROM "{table}"')  # noqa: S608
+    cur.execute(f'SELECT id, "{name_col}", "{instr_col}" FROM "{table}"')  # noqa: S608
     rows = cur.fetchall()
     print(f"[seed] Found {len(rows)} row(s) in table {table!r}")
 
@@ -181,7 +181,7 @@ def seed(conn, table: str, name_col: str, instr_col: str, souls: dict[str, str])
             continue
 
         cur.execute(
-            f'UPDATE "{table}" SET {instr_col} = %s WHERE id = %s',  # noqa: S608
+            f'UPDATE "{table}" SET "{instr_col}" = %s WHERE id = %s',  # noqa: S608
             (new_content, row["id"]),
         )
         print(f"[seed]   {row_name!r}: updated instructions ({len(new_content)} chars)")
@@ -207,12 +207,19 @@ def main() -> None:
 
     conn = wait_for_db(DATABASE_URL)
     try:
-        result = discover_schema(conn)
+        # Retry schema discovery — Paperclip may still be running migrations
+        result = None
+        for attempt in range(1, 13):  # up to ~60s of waiting
+            result = discover_schema(conn)
+            if result is not None:
+                break
+            print(f"[seed] Schema not ready yet (attempt {attempt}/12), retrying in 5s…")
+            time.sleep(5)
+
         if result is None:
             print(
-                "[seed] Schema discovery failed. "
-                "Paperclip may not have finished initialising its schema yet. "
-                "Consider increasing MAX_RETRIES or depends_on delays."
+                "[seed] Schema discovery failed after retries. "
+                "Paperclip may not have finished initialising its schema."
             )
             sys.exit(1)
 

@@ -8,7 +8,7 @@ The workflow is durable — survives crashes, respects timeouts, supports signal
 from __future__ import annotations
 
 import asyncio
-from datetime import datetime, timedelta
+from datetime import timedelta
 from dataclasses import dataclass
 
 from temporalio import workflow
@@ -94,7 +94,7 @@ class ReviewWorkflow:
                 "entity_id": input.entity_id,
                 "status": "review",
                 "review_url": f"/submissions/{input.submission_id}",
-                "deadline": (datetime.utcnow() + timeout).isoformat(),
+                "deadline": (workflow.now() + timeout).isoformat(),
             },
             start_to_close_timeout=timedelta(seconds=30),
         )

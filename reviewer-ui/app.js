@@ -76,7 +76,9 @@ function getConfig() {
 
 function defaultApiUrl() {
   const { protocol, hostname } = window.location;
-  return protocol + '//' + hostname + ':8000';
+  // In production behind Caddy, HAST API is on :8443; locally it's :8000
+  var port = (protocol === 'https:') ? '8443' : '8000';
+  return protocol + '//' + hostname + ':' + port;
 }
 
 // ── API helpers ───────────────────────────────────────────────
@@ -112,7 +114,7 @@ async function fetchSubmissions(status) {
 async function submitReview(id, decision, notes) {
   return apiFetch('/api/submissions/' + encodeURIComponent(id) + '/review', {
     method: 'POST',
-    body: JSON.stringify({ decision: decision, notes: notes }),
+    body: JSON.stringify({ decision: decision, reviewer_notes: notes }),
   });
 }
 
