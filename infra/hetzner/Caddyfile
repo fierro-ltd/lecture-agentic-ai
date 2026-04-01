@@ -6,7 +6,9 @@
 
 lecture-agentic-ai.fierro.co.uk {
     # Reviewer Dashboard — path-based routing (Cloudflare blocks non-standard ports)
-    handle /review* {
+    # /review redirects to /review/, /review/* strips prefix and proxies to nginx
+    redir /review /review/ 308
+    handle_path /review/* {
         reverse_proxy localhost:3200
     }
 
