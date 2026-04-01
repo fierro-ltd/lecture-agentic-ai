@@ -27,7 +27,7 @@ from src.models import (
 )
 from src.workflows.review_workflow import ReviewWorkflow, ReviewInput, ReviewSignal
 
-app = FastAPI(title="HAST Review Service", version="0.1.0")
+app = FastAPI(title="HAST Review Service", version="0.10.0")
 
 app.add_middleware(
     CORSMiddleware,

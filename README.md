@@ -1,4 +1,4 @@
-# Lecture Agentic AI
+# Lecture Agentic AI — v0.10
 
 > Part of the [Lecture](https://www.edtpartners.com/lecture) ecosystem by [EDT&Partners](https://www.edtpartners.com) — The First Open-Source GenAI Framework for Education
 

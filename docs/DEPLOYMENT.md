@@ -300,8 +300,9 @@ docker compose exec temporal temporal workflow list --namespace default
 
 | Symptom | Likely Cause | Fix |
 |---------|-------------|-----|
-| `hast-api` exits on startup | Temporal not ready yet | Wait for Temporal health check; increase `start_period` |
+| `hast-api` exits on startup | Temporal not ready yet | HAST services depend on `service_healthy`; increase `start_period` if needed |
 | `connection refused :7233` | Temporal still initializing | Check `docker compose logs temporal`; it takes 30-60s |
+| Temporal shows `unhealthy` | Healthcheck can't reach gRPC | Temporal binds to container IP, not localhost; healthcheck uses `$(hostname -i):7233` |
 | `FATAL: database "paperclip" does not exist` | Init script did not run | `docker compose down -v && docker compose up --build` |
 | Hermes returns 401 | API key mismatch | Verify `HERMES_API_KEY` matches across `.env` entries |
 | Workflow stuck in `review` | No human signal sent | POST a review decision or wait for timeout |
