@@ -13,14 +13,18 @@ import asyncio
 import logging
 import uuid
 import json
+from contextvars import ContextVar
 from datetime import datetime
 
 import psycopg2
 from fastapi import FastAPI, HTTPException, Depends, Header
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.requests import Request
 from temporalio.client import Client as TemporalClient
 
 from src.config import settings
+from src.logging_config import setup_logging
 from src.models import (
     SubmissionCreate,
     SubmissionResponse,
@@ -29,9 +33,25 @@ from src.models import (
 )
 from src.workflows.review_workflow import ReviewWorkflow, ReviewInput, ReviewSignal
 
+setup_logging("hast-api")
+
 logger = logging.getLogger(__name__)
 
+correlation_id_var: ContextVar[str] = ContextVar("correlation_id", default="")
+
+
+class CorrelationIDMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        cid = request.headers.get("X-Correlation-ID", str(uuid.uuid4()))
+        correlation_id_var.set(cid)
+        response = await call_next(request)
+        response.headers["X-Correlation-ID"] = cid
+        return response
+
+
 app = FastAPI(title="HAST Review Service", version="0.10.0")
+
+app.add_middleware(CorrelationIDMiddleware)
 
 app.add_middleware(
     CORSMiddleware,

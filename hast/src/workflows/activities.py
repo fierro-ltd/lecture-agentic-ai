@@ -8,6 +8,7 @@ They interact with the database and the Hermes gateway.
 from __future__ import annotations
 
 import json
+import logging
 
 import httpx
 import psycopg2
@@ -16,6 +17,8 @@ from temporalio import activity
 from src.config import settings
 from src.workflows.review_workflow import ReviewInput
 
+logger = logging.getLogger(__name__)
+
 
 @activity.defn
 async def evaluate_submission(input: ReviewInput) -> dict:
@@ -23,6 +26,7 @@ async def evaluate_submission(input: ReviewInput) -> dict:
     Call the Hermes gateway (OpenAI-compatible API) to evaluate a submission.
     Used when the Hermes agent hasn't already produced an evaluation.
     """
+    logger.info("Evaluating submission %s", input.submission_id)
     activity.heartbeat("Starting AI evaluation")
 
     system_prompt = f"""You are an academic assessment evaluator. Evaluate the following
@@ -72,6 +76,7 @@ Criteria: {input.criteria}"""
 @activity.defn
 async def update_submission_status(params: dict) -> None:
     """Update the submission status in PostgreSQL."""
+    logger.info("Updating submission %s to %s", params["submission_id"], params["status"])
     conn = psycopg2.connect(settings.DATABASE_URL)
     try:
         with conn.cursor() as cur:
@@ -95,6 +100,7 @@ async def update_submission_status(params: dict) -> None:
 @activity.defn
 async def record_review_decision(params: dict) -> None:
     """Record the final review decision."""
+    logger.info("Recording decision '%s' for submission %s", params["decision"], params["submission_id"])
     conn = psycopg2.connect(settings.DATABASE_URL)
     try:
         status_map = {
