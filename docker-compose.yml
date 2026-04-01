@@ -121,7 +121,9 @@ services:
       - PAPERCLIP_PUBLIC_URL=${PAPERCLIP_PUBLIC_URL:-http://localhost:3100}
       - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET:-lecture-agentic-ai-dev-secret-32chars-min}
       - OPENCODE_GO_API_KEY=${OPENCODE_GO_API_KEY}
-      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+      # OPENROUTER_API_KEY intentionally NOT passed to Paperclip container.
+      # The hermes-paperclip-adapter maps "glm-" to "zai" provider which
+      # falls back to OpenRouter, draining credits. Only OpenCode Go key is needed.
       - HERMES_API_KEY=${HERMES_API_KEY:-edu-platform-test-key-2026}
     ports:
       - "3100:3100"
