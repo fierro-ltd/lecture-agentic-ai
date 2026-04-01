@@ -9,6 +9,8 @@ Called by:
 
 from __future__ import annotations
 
+import asyncio
+import logging
 import uuid
 import json
 from datetime import datetime
@@ -27,6 +29,8 @@ from src.models import (
 )
 from src.workflows.review_workflow import ReviewWorkflow, ReviewInput, ReviewSignal
 
+logger = logging.getLogger(__name__)
+
 app = FastAPI(title="HAST Review Service", version="0.10.0")
 
 app.add_middleware(
@@ -42,7 +46,22 @@ _temporal_client: TemporalClient | None = None
 async def get_temporal_client() -> TemporalClient:
     global _temporal_client
     if _temporal_client is None:
-        _temporal_client = await TemporalClient.connect(settings.TEMPORAL_ADDRESS)
+        delays = [5, 10, 20]
+        for attempt, delay in enumerate(delays, start=1):
+            try:
+                _temporal_client = await TemporalClient.connect(settings.TEMPORAL_ADDRESS)
+                logger.info("Connected to Temporal at %s", settings.TEMPORAL_ADDRESS)
+                break
+            except Exception as exc:
+                logger.warning(
+                    "Temporal connect attempt %d failed (retrying in %ds): %s",
+                    attempt, delay, exc,
+                )
+                await asyncio.sleep(delay)
+        else:
+            raise RuntimeError(
+                f"Failed to connect to Temporal at {settings.TEMPORAL_ADDRESS} after {len(delays)} attempts"
+            )
     return _temporal_client
 
 
