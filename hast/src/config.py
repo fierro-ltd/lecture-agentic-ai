@@ -18,6 +18,7 @@ class Settings:
         "http://localhost:3100,http://localhost:3200,http://localhost:8233",
     )
     REVIEW_TIMEOUT_DAYS: int = int(os.getenv("REVIEW_TIMEOUT_DAYS", "7"))
+    NOTIFICATION_WEBHOOK_URL: str = os.getenv("NOTIFICATION_WEBHOOK_URL", "")
 
 
 settings = Settings()

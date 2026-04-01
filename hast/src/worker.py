@@ -12,6 +12,7 @@ from src.workflows.activities import (
     update_submission_status,
     record_review_decision,
 )
+from src.workflows.notifications import send_notification
 
 logger = logging.getLogger(__name__)
 
@@ -43,6 +44,7 @@ async def main():
             evaluate_submission,
             update_submission_status,
             record_review_decision,
+            send_notification,
         ],
     )
 
