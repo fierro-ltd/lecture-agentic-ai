@@ -30,6 +30,21 @@ for durable human-in-the-loop workflows.
 - All HAST workflow code is original work in this repo.
 - Use Docker Compose for all local development.
 
+## LLM Provider — Critical
+- ONLY pass `OPENCODE_GO_API_KEY` to Hermes agents inside Paperclip container.
+- NEVER pass `OPENROUTER_API_KEY` to the Paperclip entrypoint — the hermes-paperclip-adapter
+  maps "glm-" prefix to "zai" provider which falls back to OpenRouter, burning credits.
+- OpenRouter is only for vision calls via the Hermes gateway (configured in config.yaml).
+
+## Agent Instructions (SOUL.md)
+- Each agent has a SOUL.md file in `hermes/agents/<agent-name>/SOUL.md`
+- These define the agent's identity, lane, capabilities, and reporting format
+- SOUL.md content must be pasted into each agent's **AGENTS.md** via the
+  Paperclip UI Instructions tab (Agent > Instructions > click editor > Cmd+A > type content > Save)
+- The Paperclip API rejects PATCH requests from non-browser origins ("Board mutation requires trusted browser origin")
+- Chrome DevTools `type_text` works; `fill` does NOT work with Paperclip's ProseMirror editor
+- This must be done separately for each Paperclip instance (local vs production have separate databases)
+
 ## Running
 ```
 cp .env.example .env  # Fill in API keys
