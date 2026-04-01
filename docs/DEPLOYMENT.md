@@ -115,6 +115,9 @@ Two scripts run on first PostgreSQL start (via `/docker-entrypoint-initdb.d/`):
 | `TEMPORAL_TASK_QUEUE` | hast-worker | `lecture-review-queue` | Temporal task queue name |
 | `HERMES_GATEWAY_URL` | hast-api, hast-worker | `http://hermes-gateway:8642` | Hermes Gateway URL for AI evaluation |
 | `REVIEW_TIMEOUT_DAYS` | hast-worker | `7` | Days before unreviewed submissions expire |
+| `HAST_API_KEY` | hast-api, hast-worker | (falls back to `HERMES_API_KEY`) | Bearer token for HAST API authentication |
+| `CORS_ALLOWED_ORIGINS` | hast-api | `http://localhost:3100,...` | Comma-separated allowed CORS origins |
+| `NOTIFICATION_WEBHOOK_URL` | hast-api, hast-worker | (empty) | Webhook URL for review notifications (optional) |
 
 ## Production Deployment (Hetzner / VPS)
 
@@ -124,11 +127,13 @@ Two scripts run on first PostgreSQL start (via `/docker-entrypoint-initdb.d/`):
 graph TD
     Internet["Internet"] --> Caddy["Caddy<br/>:443 TLS"]
     Caddy -- "app.example.com" --> PAP["Paperclip :3100"]
+    Caddy -- "app.example.com:3200" --> RUI["Reviewer UI :3200"]
     Caddy -- "api.example.com" --> HAST["HAST API :8000"]
     Caddy -- "temporal.example.com" --> TUI["Temporal UI :8233"]
 
     subgraph "Docker Compose (internal network)"
         PAP
+        RUI
         HAST
         TUI
         HG["Hermes Gateway :8642"]

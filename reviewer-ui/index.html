@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Review Dashboard — EDT&amp;Partners</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2300d4aa'/%3E%3Ctext x='16' y='22' font-family='monospace' font-size='18' font-weight='800' fill='%230a1a14' text-anchor='middle'%3ER%3C/text%3E%3C/svg%3E" />
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ═══════════ HEADER ═══════════ -->
+  <header class="header" role="banner">
+    <a class="header-logo" href="#" aria-label="EDT&amp;Partners Lecture">
+      <div class="logo-mark" aria-hidden="true">L</div>
+      <span class="logo-name">EDT&amp;Partners</span>
+    </a>
+
+    <div class="header-divider" aria-hidden="true"></div>
+
+    <h1 class="header-title">Review Dashboard</h1>
+
+    <div class="header-meta">
+      <div class="badge-count" id="pendingBadge" aria-live="polite" aria-label="Pending reviews">
+        <span class="dot" aria-hidden="true"></span>
+        <span id="pendingCount">0</span> pending
+      </div>
+
+      <div class="refresh-indicator" id="lastRefreshed" aria-live="polite">
+        <!-- Updated at HH:MM:SS -->
+      </div>
+
+      <button class="btn-icon" id="btnRefresh" title="Refresh submissions" aria-label="Refresh submissions">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polyline points="23 4 23 10 17 10"/>
+          <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- ═══════════ CONFIG BAR ═══════════ -->
+  <div class="config-bar" role="region" aria-label="API Configuration">
+    <label for="apiUrl">API URL</label>
+    <input
+      type="url"
+      id="apiUrl"
+      class="config-input url-input"
+      placeholder="http://localhost:8000"
+      autocomplete="off"
+      spellcheck="false"
+      aria-describedby="connectionStatus"
+    />
+
+    <label for="apiKey">API Key</label>
+    <input
+      type="password"
+      id="apiKey"
+      class="config-input key-input"
+      placeholder="Bearer token"
+      autocomplete="off"
+      spellcheck="false"
+    />
+
+    <div class="config-separator"></div>
+
+    <div class="config-actions">
+      <div class="config-status" id="connectionStatus" role="status">
+        <span class="status-dot"></span>
+        Idle
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ MAIN ═══════════ -->
+  <main class="main" role="main">
+
+    <!-- LEFT: Submission List -->
+    <aside class="list-panel" role="complementary" aria-label="Submission list">
+      <div class="list-header">
+        <span class="list-title">Submissions</span>
+      </div>
+
+      <!-- Filter tabs -->
+      <div class="filter-bar" role="tablist" aria-label="Filter by status">
+        <button class="filter-btn active" data-filter="review" role="tab" aria-selected="true">Pending Review</button>
+        <button class="filter-btn" data-filter="approved" role="tab" aria-selected="false">Approved</button>
+        <button class="filter-btn" data-filter="rejected" role="tab" aria-selected="false">Rejected</button>
+        <button class="filter-btn" data-filter="all" role="tab" aria-selected="false">All</button>
+      </div>
+
+      <!-- Scrollable list -->
+      <div class="list-scroll" id="submissionList" role="list" aria-label="Submissions">
+        <!-- Populated by app.js -->
+        <div class="state-block">
+          <div class="state-icon" aria-hidden="true">&#x29D7;</div>
+          <p>Loading submissions&hellip;</p>
+        </div>
+      </div>
+    </aside>
+
+    <!-- RIGHT: Detail Panel -->
+    <section class="detail-panel" id="detailPanel" aria-label="Submission detail" aria-live="polite">
+      <div class="detail-empty">
+        <div class="empty-icon" aria-hidden="true">&#x1F50D;</div>
+        <p>Select a submission to review</p>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- Toast container -->
+<div class="toast-container" id="toastContainer" aria-live="assertive" aria-atomic="true"></div>
+
+<script src="app.js"></script>
+</body>
+</html>

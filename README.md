@@ -1,4 +1,4 @@
-# Lecture Agentic AI — v0.10
+# Lecture Agentic AI — v0.11
 
 > Part of the [Lecture](https://www.edtpartners.com/lecture) ecosystem by [EDT&Partners](https://www.edtpartners.com) — The First Open-Source GenAI Framework for Education
 
@@ -35,6 +35,18 @@ graph LR
     TUI --> TMP
 ```
 
+## Cross-Industry Platform
+
+Lecture Agentic AI serves multiple verticals with the same core platform:
+
+| Industry | Company Template | Example Agents | Use Cases |
+|----------|-----------------|---------------|-----------|
+| **Education** | `higher-ed` | Assessment Quality, Curriculum Compliance, Knowledge Curator | Rubric evaluation, accreditation compliance, knowledge graph |
+| **Healthcare** | `healthcare` | Documentation Quality, Healthcare Compliance | Clinical note review, HIPAA/Joint Commission compliance |
+| **Government** | *(planned)* | *(planned)* | Inspection review, regulatory compliance |
+
+Platform-level code uses industry-neutral terminology (`submission`, `evaluation`, `review`). Industry-specific language belongs only in company templates and Hermes skills/agents.
+
 ## Quick Start
 
 ```bash
@@ -47,6 +59,7 @@ docker compose up --build
 
 # 3. Open the UIs
 open http://localhost:3100     # Paperclip (orchestration + org chart)
+open http://localhost:3200     # Reviewer Dashboard (pending reviews)
 open http://localhost:8233     # Temporal (workflow visibility)
 ```
 
@@ -58,9 +71,11 @@ open http://localhost:8233     # Temporal (workflow visibility)
 | **Hermes Gateway** | 8642 | Python | OpenAI-compatible LLM inference API |
 | **HAST API** | 8000 | Python / FastAPI | Human-in-the-loop review REST API |
 | **HAST Worker** | -- | Python / Temporal SDK | Executes workflow activities |
+| **Reviewer Dashboard** | 3200 | HTML / JS / nginx | Human reviewer UI for pending submissions |
 | **Temporal Server** | 7233 | Go | Durable workflow orchestration |
 | **Temporal UI** | 8233 | TypeScript / React | Workflow visibility dashboard |
 | **PostgreSQL** | 5432 | PostgreSQL 17 | Shared database (3 databases) |
+| **Seed Instructions** | -- | Python (one-shot) | Auto-seeds SOUL.md into Paperclip DB on startup |
 
 ---
 

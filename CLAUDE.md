@@ -53,7 +53,12 @@ docker compose up --build
 
 ## Ports
 - Paperclip UI: http://localhost:3100
+- Reviewer Dashboard: http://localhost:3200
 - HAST API: http://localhost:8000
 - Temporal UI: http://localhost:8233
 - Hermes Gateway: http://localhost:8642
 - PostgreSQL: localhost:5432
+
+## HAST API Authentication
+All `/api/*` endpoints require `Authorization: Bearer <HAST_API_KEY>` header.
+The `/health` endpoint is unauthenticated. Default key matches `HERMES_API_KEY`.

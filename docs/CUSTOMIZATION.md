@@ -177,6 +177,57 @@ To use the new template, configure Paperclip to load it (refer to Paperclip docu
 
 ---
 
+## Healthcare Company Template
+
+A ready-made template for healthcare organizations is available at `paperclip/company-templates/healthcare/company.json`. It defines a three-agent org chart tailored for clinical quality and regulatory compliance.
+
+### Agents
+
+| Agent | Role | Purpose |
+|-------|------|---------|
+| Clinical Operations Director | CEO | Coordinates all clinical AI operations. Decomposes goals, delegates tasks, reviews cross-functional work. |
+| Documentation Quality Agent | Engineer | Reviews H&P notes, discharge summaries, and procedure reports against documentation quality standards. |
+| Healthcare Compliance Agent | Engineer | Monitors HIPAA, Joint Commission, and CMS compliance. Reviews policies, procedures, and documentation for regulatory adherence. |
+
+### Associated files
+
+| File | Purpose |
+|------|---------|
+| `hermes/agents/clinical-ops-director/SOUL.md` | Identity and lane for the director agent |
+| `hermes/agents/documentation-quality/SOUL.md` | Identity and lane for the documentation quality agent |
+| `hermes/agents/healthcare-compliance/SOUL.md` | Identity and lane for the compliance agent |
+| `hermes/skills/clinical-documentation-review/SKILL.md` | Skill for structured clinical documentation evaluation |
+
+### How multiple templates work
+
+Each subdirectory under `paperclip/company-templates/` is a self-contained template. Only one template is active per Paperclip deployment — determined by which file Paperclip is configured to load at startup.
+
+To switch between templates (e.g. from higher-ed to healthcare):
+
+1. Update the Paperclip configuration to point at the new template path.
+2. Restart the Paperclip container:
+
+```bash
+docker compose restart paperclip
+```
+
+3. For each agent in the new template, paste the corresponding SOUL.md content into the agent's Instructions tab in the Paperclip UI (Agent > Instructions > click editor > Cmd+A > type content > Save). Use `type_text` via Chrome DevTools if automating — `fill` does not work with Paperclip's ProseMirror editor.
+
+### Deploying the healthcare template locally
+
+```bash
+# Bring up the stack
+cp .env.example .env   # fill in OPENCODE_GO_API_KEY
+docker compose up --build
+
+# Open Paperclip UI at http://localhost:3100
+# Configure Paperclip to load paperclip/company-templates/healthcare/company.json
+# Restart Paperclip
+docker compose restart paperclip
+```
+
+---
+
 ## Changing LLM Provider
 
 ### Text model

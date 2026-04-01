@@ -83,12 +83,40 @@ class ReviewWorkflow:
 
         # Step 3: Wait for human review signal
         timeout = timedelta(days=settings.REVIEW_TIMEOUT_DAYS)
+
+        # Notify: submission ready for review
+        await workflow.execute_activity(
+            "send_notification",
+            {
+                "event": "review_ready",
+                "submission_id": input.submission_id,
+                "submission_type": input.submission_type,
+                "entity_id": input.entity_id,
+                "status": "review",
+                "review_url": f"/submissions/{input.submission_id}",
+                "deadline": (workflow.now() + timeout).isoformat(),
+            },
+            start_to_close_timeout=timedelta(seconds=30),
+        )
+
         try:
             await workflow.wait_condition(
                 lambda: self._review_signal is not None,
                 timeout=timeout,
             )
         except asyncio.TimeoutError:
+            await workflow.execute_activity(
+                "send_notification",
+                {
+                    "event": "review_expired",
+                    "submission_id": input.submission_id,
+                    "submission_type": input.submission_type,
+                    "entity_id": input.entity_id,
+                    "status": "expired",
+                    "review_url": f"/submissions/{input.submission_id}",
+                },
+                start_to_close_timeout=timedelta(seconds=30),
+            )
             await workflow.execute_activity(
                 "update_submission_status",
                 {"submission_id": input.submission_id, "status": "expired"},

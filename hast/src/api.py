@@ -2,23 +2,29 @@
 HAST API — FastAPI endpoints for the human-in-the-loop review service.
 
 Called by:
-1. Hermes agents (via the assessment-review skill) to submit evaluations
+1. Hermes agents (via review skills) to submit evaluations
 2. Paperclip (optional) to check submission status
 3. Human reviewers (via API for the PoC) to submit review decisions
 """
 
 from __future__ import annotations
 
+import asyncio
+import logging
 import uuid
 import json
+from contextvars import ContextVar
 from datetime import datetime
 
 import psycopg2
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends, Header
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.requests import Request
 from temporalio.client import Client as TemporalClient
 
 from src.config import settings
+from src.logging_config import setup_logging
 from src.models import (
     SubmissionCreate,
     SubmissionResponse,
@@ -27,11 +33,29 @@ from src.models import (
 )
 from src.workflows.review_workflow import ReviewWorkflow, ReviewInput, ReviewSignal
 
-app = FastAPI(title="HAST Review Service", version="0.10.0")
+setup_logging("hast-api")
+
+logger = logging.getLogger(__name__)
+
+correlation_id_var: ContextVar[str] = ContextVar("correlation_id", default="")
+
+
+class CorrelationIDMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        cid = request.headers.get("X-Correlation-ID", str(uuid.uuid4()))
+        correlation_id_var.set(cid)
+        response = await call_next(request)
+        response.headers["X-Correlation-ID"] = cid
+        return response
+
+
+app = FastAPI(title="HAST Review Service", version="0.11.0")
+
+app.add_middleware(CorrelationIDMiddleware)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[o.strip() for o in settings.CORS_ALLOWED_ORIGINS.split(",") if o.strip()],
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -42,7 +66,22 @@ _temporal_client: TemporalClient | None = None
 async def get_temporal_client() -> TemporalClient:
     global _temporal_client
     if _temporal_client is None:
-        _temporal_client = await TemporalClient.connect(settings.TEMPORAL_ADDRESS)
+        delays = [5, 10, 20]
+        for attempt, delay in enumerate(delays, start=1):
+            try:
+                _temporal_client = await TemporalClient.connect(settings.TEMPORAL_ADDRESS)
+                logger.info("Connected to Temporal at %s", settings.TEMPORAL_ADDRESS)
+                break
+            except Exception as exc:
+                logger.warning(
+                    "Temporal connect attempt %d failed (retrying in %ds): %s",
+                    attempt, delay, exc,
+                )
+                await asyncio.sleep(delay)
+        else:
+            raise RuntimeError(
+                f"Failed to connect to Temporal at {settings.TEMPORAL_ADDRESS} after {len(delays)} attempts"
+            )
     return _temporal_client
 
 
@@ -72,13 +111,22 @@ SUBMISSION_SELECT = """SELECT id, submission_type, entity_id, status, content,
                        FROM hast_submissions"""
 
 
+async def verify_api_key(authorization: str = Header(..., description="Bearer token")) -> str:
+    """Validate Bearer token against HAST_API_KEY."""
+    if not authorization.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Invalid authorization header format")
+    token = authorization[7:]
+    if token != settings.HAST_API_KEY:
+        raise HTTPException(status_code=401, detail="Invalid API key")
+    return token
+
 @app.get("/health")
 async def health():
     return {"status": "ok", "service": "hast-review"}
 
 
 @app.post("/api/submissions", response_model=SubmissionResponse)
-async def create_submission(payload: SubmissionCreate):
+async def create_submission(payload: SubmissionCreate, _auth: str = Depends(verify_api_key)):
     """Create a new submission and start the review workflow."""
     submission_id = str(uuid.uuid4())
     workflow_id = f"review-{submission_id}"
@@ -159,7 +207,7 @@ async def create_submission(payload: SubmissionCreate):
 
 
 @app.get("/api/submissions/{submission_id}", response_model=SubmissionResponse)
-async def get_submission(submission_id: str):
+async def get_submission(submission_id: str, _auth: str = Depends(verify_api_key)):
     """Get a submission by ID."""
     conn = get_db()
     try:
@@ -177,7 +225,7 @@ async def get_submission(submission_id: str):
 
 
 @app.get("/api/submissions")
-async def list_submissions(status: str | None = None, limit: int = 50):
+async def list_submissions(status: str | None = None, limit: int = 50, _auth: str = Depends(verify_api_key)):
     """List submissions, optionally filtered by status."""
     conn = get_db()
     try:
@@ -198,7 +246,7 @@ async def list_submissions(status: str | None = None, limit: int = 50):
 
 
 @app.post("/api/submissions/{submission_id}/review")
-async def submit_review(submission_id: str, decision: ReviewDecision):
+async def submit_review(submission_id: str, decision: ReviewDecision, _auth: str = Depends(verify_api_key)):
     """Submit a human review decision. Sends a signal to the Temporal workflow."""
     conn = get_db()
     try:

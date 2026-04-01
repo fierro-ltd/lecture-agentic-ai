@@ -1,4 +1,4 @@
-"""Pydantic models for the HAST review workflow."""
+"""Pydantic models for the review workflow."""
 
 from __future__ import annotations
 
@@ -24,12 +24,12 @@ class SubmissionCreate(BaseModel):
 
     submission_type: str = Field(
         ...,
-        description="Type of submission: assessment, enrollment, compliance",
+        description="Type of submission (e.g. assessment, clinical_review, compliance, inspection)",
     )
-    entity_id: str = Field(..., description="Student/course/applicant ID")
+    entity_id: str = Field(..., description="Entity identifier (e.g. student, patient, applicant, case number)")
     context: dict[str, Any] = Field(
         default_factory=dict,
-        description="Submission metadata (course_id, program_id, etc.)",
+        description="Contextual metadata (e.g. course_id, department_id, case_number)",
     )
     content: str = Field(..., description="The content being evaluated")
     criteria: str = Field(

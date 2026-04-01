@@ -40,7 +40,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 20
-      start_period: 30s
+      start_period: 60s
 
   temporal-ui:
     image: temporalio/ui:2.31.2
@@ -68,6 +68,12 @@ services:
       - ./hermes/skills:/root/.hermes/skills
       - ./hermes/agents:/root/.hermes/agents
       - ./hermes/config.yaml:/root/.hermes/config.yaml
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:8642/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
 
   # === HAST Review Service (FastAPI + Temporal Worker) ===
   hast-api:
@@ -79,6 +85,7 @@ services:
       - TEMPORAL_ADDRESS=temporal:7233
       - HERMES_GATEWAY_URL=http://hermes-gateway:8642
       - HERMES_API_KEY=${HERMES_API_KEY:-edu-platform-test-key-2026}
+      - HAST_API_KEY=${HERMES_API_KEY:-edu-platform-test-key-2026}
     ports:
       - "8000:8000"
     depends_on:
@@ -87,7 +94,7 @@ services:
       temporal:
         condition: service_healthy
       hermes-gateway:
-        condition: service_started
+        condition: service_healthy
 
   hast-worker:
     build:
@@ -99,13 +106,14 @@ services:
       - TEMPORAL_ADDRESS=temporal:7233
       - HERMES_GATEWAY_URL=http://hermes-gateway:8642
       - HERMES_API_KEY=${HERMES_API_KEY:-edu-platform-test-key-2026}
+      - HAST_API_KEY=${HERMES_API_KEY:-edu-platform-test-key-2026}
     depends_on:
       postgres:
         condition: service_healthy
       temporal:
         condition: service_healthy
       hermes-gateway:
-        condition: service_started
+        condition: service_healthy
 
   # === Paperclip (Orchestration + UI) ===
   paperclip:
@@ -131,12 +139,37 @@ services:
       postgres:
         condition: service_healthy
       hermes-gateway:
-        condition: service_started
+        condition: service_healthy
     volumes:
       - paperclip_data:/paperclip
       - ./hermes/skills:/root/.hermes/skills
       - ./hermes/agents:/root/.hermes/agents
       - ./hermes/config.yaml:/root/.hermes/config.yaml
+
+  # === Reviewer Dashboard (standalone SPA) ===
+  reviewer-ui:
+    build:
+      context: ./reviewer-ui
+      dockerfile: Dockerfile
+    ports:
+      - "3200:3200"
+
+  # === SOUL.md Seeding (one-shot, runs on startup) ===
+  seed-instructions:
+    build:
+      context: ./scripts
+      dockerfile: Dockerfile.seed
+    environment:
+      - PAPERCLIP_DATABASE_URL=postgresql://${POSTGRES_USER:-lecture}:${POSTGRES_PASSWORD:-lecture_dev}@postgres:5432/paperclip
+      - AGENTS_DIR=/agents
+    volumes:
+      - ./hermes/agents:/agents:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+      paperclip:
+        condition: service_started
+    restart: "no"
 
 volumes:
   postgres_data:

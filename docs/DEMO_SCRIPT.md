@@ -79,3 +79,50 @@ In-doc Translation, and more. Now imagine adding:
 - KAG integration: EDT's proprietary knowledge layer as a skill every agent uses
 
 This is Lecture's next evolution — from tools to autonomous agents."
+
+## CLI Demo
+
+A self-contained walkthrough of the full submission-to-review lifecycle using the shell scripts in `scripts/`.
+
+### Step 1 — Create a submission
+
+```bash
+./scripts/demo-routine.sh
+```
+
+This POSTs a sample essay submission with a pre-populated AI evaluation to the HAST API at `http://localhost:8000`. On success it prints the new submission ID and tells you the next command to run.
+
+You can override the target URL and API key:
+
+```bash
+./scripts/demo-routine.sh http://localhost:8000 edu-platform-test-key-2026
+```
+
+### Step 2 — Open the reviewer UI
+
+Navigate to **http://localhost:3200** to see the pending submission in the human-in-the-loop review queue. The Temporal workflow is paused, waiting for a signal.
+
+You can also confirm the submission is waiting via the API:
+
+```bash
+curl -s http://localhost:8000/api/submissions?status=review | python3 -m json.tool
+```
+
+### Step 3 — Approve the submission
+
+Take the `<SUBMISSION_ID>` printed in Step 1 and run:
+
+```bash
+./scripts/demo-review.sh <SUBMISSION_ID>
+```
+
+The default decision is `approved`. To reject or flag instead:
+
+```bash
+./scripts/demo-review.sh <SUBMISSION_ID> rejected
+./scripts/demo-review.sh <SUBMISSION_ID> needs_revision
+```
+
+### Step 4 — Verify in Temporal UI
+
+Open **http://localhost:8233** and locate the `ReviewWorkflow` run for the submission. It should now show as `Completed`. The workflow received the human signal and progressed to its final state — demonstrating durable execution across the full lifecycle.

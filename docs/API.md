@@ -14,6 +14,16 @@ The HAST (Human-in-the-loop Assessment and Submission Tracker) API is a FastAPI 
 | `GET` | `/api/submissions/{id}` | Get a single submission |
 | `POST` | `/api/submissions/{id}/review` | Submit a human review decision |
 
+## Authentication
+
+All `/api/*` endpoints require a Bearer token in the `Authorization` header:
+
+```bash
+curl -H "Authorization: Bearer $HAST_API_KEY" http://localhost:8000/api/submissions
+```
+
+The `/health` endpoint requires no authentication.
+
 ## End-to-End Flow
 
 ```mermaid
