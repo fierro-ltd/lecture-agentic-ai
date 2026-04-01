@@ -66,6 +66,7 @@ services:
     volumes:
       - hermes_data:/root/.hermes
       - ./hermes/skills:/root/.hermes/skills
+      - ./hermes/agents:/root/.hermes/agents
       - ./hermes/config.yaml:/root/.hermes/config.yaml
 
   # === HAST Review Service (FastAPI + Temporal Worker) ===
@@ -132,6 +133,7 @@ services:
     volumes:
       - paperclip_data:/paperclip
       - ./hermes/skills:/root/.hermes/skills
+      - ./hermes/agents:/root/.hermes/agents
       - ./hermes/config.yaml:/root/.hermes/config.yaml
 
 volumes:
