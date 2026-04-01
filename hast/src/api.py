@@ -16,7 +16,7 @@ import json
 from datetime import datetime
 
 import psycopg2
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends, Header
 from fastapi.middleware.cors import CORSMiddleware
 from temporalio.client import Client as TemporalClient
 
@@ -91,13 +91,22 @@ SUBMISSION_SELECT = """SELECT id, submission_type, entity_id, status, content,
                        FROM hast_submissions"""
 
 
+async def verify_api_key(authorization: str = Header(..., description="Bearer token")) -> str:
+    """Validate Bearer token against HAST_API_KEY."""
+    if not authorization.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Invalid authorization header format")
+    token = authorization[7:]
+    if token != settings.HAST_API_KEY:
+        raise HTTPException(status_code=401, detail="Invalid API key")
+    return token
+
 @app.get("/health")
 async def health():
     return {"status": "ok", "service": "hast-review"}
 
 
 @app.post("/api/submissions", response_model=SubmissionResponse)
-async def create_submission(payload: SubmissionCreate):
+async def create_submission(payload: SubmissionCreate, _auth: str = Depends(verify_api_key)):
     """Create a new submission and start the review workflow."""
     submission_id = str(uuid.uuid4())
     workflow_id = f"review-{submission_id}"
@@ -178,7 +187,7 @@ async def create_submission(payload: SubmissionCreate):
 
 
 @app.get("/api/submissions/{submission_id}", response_model=SubmissionResponse)
-async def get_submission(submission_id: str):
+async def get_submission(submission_id: str, _auth: str = Depends(verify_api_key)):
     """Get a submission by ID."""
     conn = get_db()
     try:
@@ -196,7 +205,7 @@ async def get_submission(submission_id: str):
 
 
 @app.get("/api/submissions")
-async def list_submissions(status: str | None = None, limit: int = 50):
+async def list_submissions(status: str | None = None, limit: int = 50, _auth: str = Depends(verify_api_key)):
     """List submissions, optionally filtered by status."""
     conn = get_db()
     try:
@@ -217,7 +226,7 @@ async def list_submissions(status: str | None = None, limit: int = 50):
 
 
 @app.post("/api/submissions/{submission_id}/review")
-async def submit_review(submission_id: str, decision: ReviewDecision):
+async def submit_review(submission_id: str, decision: ReviewDecision, _auth: str = Depends(verify_api_key)):
     """Submit a human review decision. Sends a signal to the Temporal workflow."""
     conn = get_db()
     try:

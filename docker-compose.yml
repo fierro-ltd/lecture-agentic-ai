@@ -85,6 +85,7 @@ services:
       - TEMPORAL_ADDRESS=temporal:7233
       - HERMES_GATEWAY_URL=http://hermes-gateway:8642
       - HERMES_API_KEY=${HERMES_API_KEY:-edu-platform-test-key-2026}
+      - HAST_API_KEY=${HERMES_API_KEY:-edu-platform-test-key-2026}
     ports:
       - "8000:8000"
     depends_on:
@@ -105,6 +106,7 @@ services:
       - TEMPORAL_ADDRESS=temporal:7233
       - HERMES_GATEWAY_URL=http://hermes-gateway:8642
       - HERMES_API_KEY=${HERMES_API_KEY:-edu-platform-test-key-2026}
+      - HAST_API_KEY=${HERMES_API_KEY:-edu-platform-test-key-2026}
     depends_on:
       postgres:
         condition: service_healthy
