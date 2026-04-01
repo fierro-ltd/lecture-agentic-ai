@@ -12,8 +12,12 @@ echo "HAST API: $HAST_URL"
 
 # Health check
 echo -n "Health check... "
-HEALTH=$(curl -sf "$HAST_URL/health" 2>&1)
-echo "$HEALTH"
+if ! curl -sf "$HAST_URL/health" -o /dev/null; then
+  echo "FAILED"
+  echo "ERROR: HAST service is not healthy at $HAST_URL"
+  exit 1
+fi
+echo "OK"
 
 # Create submission with pre-computed evaluation
 echo ""

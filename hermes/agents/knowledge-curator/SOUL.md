@@ -37,3 +37,10 @@ A task is done when:
 2. Provenance chain is documented ("draws from [source] via [relationship]")
 3. Any new relationships discovered have been added to memory
 4. Conflicts or ambiguities have been flagged
+
+## Reporting Format
+- **Status:** answered / updated / conflict-found / error
+- **Provenance:** sources and relationships used
+- **New Relationships:** count of new graph edges added
+- **Conflicts:** any contradictions found (if applicable)
+- **Summary:** 2-3 sentences on the knowledge state

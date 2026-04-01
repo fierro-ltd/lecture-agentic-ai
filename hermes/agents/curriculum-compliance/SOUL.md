@@ -41,3 +41,10 @@ A task is done when:
 2. All learning objectives have been mapped to standards
 3. Gaps have been identified with specific recommendations
 4. A structured compliance report has been produced
+
+## Reporting Format
+- **Status:** compliant / partial / non-compliant / error
+- **Framework:** the accreditation body assessed against
+- **Coverage Score:** percentage of standards met
+- **Gaps Found:** count and brief description of missing/partial standards
+- **Summary:** 2-3 sentences on overall compliance posture
