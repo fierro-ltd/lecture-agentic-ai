@@ -29,7 +29,7 @@ services:
       - "127.0.0.1:8000:8000"
     restart: unless-stopped
     environment:
-      - CORS_ALLOWED_ORIGINS=https://lecture-agentic-ai.fierro.co.uk,https://lecture-agentic-ai.fierro.co.uk:3201,https://lecture-agentic-ai.fierro.co.uk:9233
+      - CORS_ALLOWED_ORIGINS=https://lecture-agentic-ai.fierro.co.uk,https://lecture-agentic-ai.fierro.co.uk:8443,https://lecture-agentic-ai.fierro.co.uk:9233
 
   hast-worker:
     restart: unless-stopped

@@ -5,24 +5,27 @@
 # Deploy:  cp Caddyfile /etc/caddy/Caddyfile && systemctl restart caddy
 
 lecture-agentic-ai.fierro.co.uk {
-    reverse_proxy localhost:3100 {
-        header_up X-Real-IP {remote_host}
-        header_up X-Forwarded-For {remote_host}
-        header_up X-Forwarded-Proto {scheme}
+    # Reviewer Dashboard — path-based routing (Cloudflare blocks non-standard ports)
+    handle /review* {
+        reverse_proxy localhost:3200
+    }
+
+    # Paperclip UI — default handler
+    handle {
+        reverse_proxy localhost:3100 {
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+        }
     }
 }
 
-# HAST API — HTTPS on port 8443
+# HAST API — HTTPS on port 8443 (Cloudflare-supported port)
 lecture-agentic-ai.fierro.co.uk:8443 {
     reverse_proxy localhost:8000
 }
 
-# Temporal UI — HTTPS on port 9233
+# Temporal UI — HTTPS on port 9233 (internal access only)
 lecture-agentic-ai.fierro.co.uk:9233 {
     reverse_proxy localhost:8233
-}
-
-# Reviewer Dashboard — HTTPS on port 3201 (proxies to Docker :3200)
-lecture-agentic-ai.fierro.co.uk:3201 {
-    reverse_proxy localhost:3200
 }
