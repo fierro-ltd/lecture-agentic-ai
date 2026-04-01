@@ -2,11 +2,14 @@
 set -e
 
 # Create Hermes .env from container environment variables
-# The hermes_local adapter spawns `hermes chat -q` which needs these
+# ONLY pass OpenCode Go key for text model (GLM-5).
+# OpenRouter key is intentionally NOT passed here to prevent
+# GLM-5 text calls from falling back to OpenRouter (which costs credits).
+# Vision calls (google/gemini-3.1-flash-lite-preview) are configured
+# separately in hermes/config.yaml under the vision section.
 mkdir -p /root/.hermes
 cat > /root/.hermes/.env << EOF
 OPENCODE_GO_API_KEY=${OPENCODE_GO_API_KEY}
-OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
 EOF
 
 # Run the Paperclip server
