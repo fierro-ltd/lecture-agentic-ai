@@ -2,7 +2,7 @@
 HAST API — FastAPI endpoints for the human-in-the-loop review service.
 
 Called by:
-1. Hermes agents (via the assessment-review skill) to submit evaluations
+1. Hermes agents (via review skills) to submit evaluations
 2. Paperclip (optional) to check submission status
 3. Human reviewers (via API for the PoC) to submit review decisions
 """

@@ -35,6 +35,18 @@ graph LR
     TUI --> TMP
 ```
 
+## Cross-Industry Platform
+
+Lecture Agentic AI serves multiple verticals with the same core platform:
+
+| Industry | Company Template | Example Agents | Use Cases |
+|----------|-----------------|---------------|-----------|
+| **Education** | `higher-ed` | Assessment Quality, Curriculum Compliance, Knowledge Curator | Rubric evaluation, accreditation compliance, knowledge graph |
+| **Healthcare** | `healthcare` | Documentation Quality, Healthcare Compliance | Clinical note review, HIPAA/Joint Commission compliance |
+| **Government** | *(planned)* | *(planned)* | Inspection review, regulatory compliance |
+
+Platform-level code uses industry-neutral terminology (`submission`, `evaluation`, `review`). Industry-specific language belongs only in company templates and Hermes skills/agents.
+
 ## Quick Start
 
 ```bash
