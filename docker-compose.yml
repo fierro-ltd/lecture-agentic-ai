@@ -146,6 +146,14 @@ services:
       - ./hermes/agents:/root/.hermes/agents
       - ./hermes/config.yaml:/root/.hermes/config.yaml
 
+  # === Reviewer Dashboard (standalone SPA) ===
+  reviewer-ui:
+    build:
+      context: ./reviewer-ui
+      dockerfile: Dockerfile
+    ports:
+      - "3200:3200"
+
   # === SOUL.md Seeding (one-shot, runs on startup) ===
   seed-instructions:
     build:
