@@ -146,6 +146,23 @@ services:
       - ./hermes/agents:/root/.hermes/agents
       - ./hermes/config.yaml:/root/.hermes/config.yaml
 
+  # === SOUL.md Seeding (one-shot, runs on startup) ===
+  seed-instructions:
+    build:
+      context: ./scripts
+      dockerfile: Dockerfile.seed
+    environment:
+      - PAPERCLIP_DATABASE_URL=postgresql://${POSTGRES_USER:-lecture}:${POSTGRES_PASSWORD:-lecture_dev}@postgres:5432/paperclip
+      - AGENTS_DIR=/agents
+    volumes:
+      - ./hermes/agents:/agents:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+      paperclip:
+        condition: service_started
+    restart: "no"
+
 volumes:
   postgres_data:
   hermes_data:
