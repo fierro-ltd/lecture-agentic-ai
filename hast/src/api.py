@@ -49,7 +49,7 @@ class CorrelationIDMiddleware(BaseHTTPMiddleware):
         return response
 
 
-app = FastAPI(title="HAST Review Service", version="0.10.0")
+app = FastAPI(title="HAST Review Service", version="0.11.0")
 
 app.add_middleware(CorrelationIDMiddleware)
 
