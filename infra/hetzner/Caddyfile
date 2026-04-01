@@ -22,7 +22,7 @@ lecture-agentic-ai.fierro.co.uk:9233 {
     reverse_proxy localhost:8233
 }
 
-# Reviewer Dashboard — HTTPS on port 3200
-lecture-agentic-ai.fierro.co.uk:3200 {
+# Reviewer Dashboard — HTTPS on port 3201 (proxies to Docker :3200)
+lecture-agentic-ai.fierro.co.uk:3201 {
     reverse_proxy localhost:3200
 }
