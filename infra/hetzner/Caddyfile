@@ -5,7 +5,7 @@
 # Deploy:  cp Caddyfile /etc/caddy/Caddyfile && systemctl restart caddy
 
 lecture-agentic-ai.fierro.co.uk {
-    # Reviewer Dashboard — path-based routing (Cloudflare blocks non-standard ports)
+    # Demo UI (landing + pipeline + reviewer) — path-based routing (Cloudflare blocks non-standard ports)
     # /review redirects to /review/, /review/* strips prefix and proxies to nginx
     redir /review /review/ 308
     handle_path /review/* {
