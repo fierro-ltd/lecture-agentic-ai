@@ -39,7 +39,7 @@ services:
       - "127.0.0.1:3100:3100"
     restart: unless-stopped
     environment:
-      - PAPERCLIP_PUBLIC_URL=https://lecture-agentic-ai.fierro.co.uk
+      - PAPERCLIP_PUBLIC_URL=https://lecture-agentic-ai.fierro.co.uk/admin
 
   demo-ui:
     ports: !override

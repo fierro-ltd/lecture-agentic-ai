@@ -5,20 +5,15 @@
 # Deploy:  cp Caddyfile /etc/caddy/Caddyfile && systemctl restart caddy
 
 lecture-agentic-ai.fierro.co.uk {
-    # Demo UI (landing + pipeline + reviewer) — path-based routing (Cloudflare blocks non-standard ports)
-    # /review redirects to /review/, /review/* strips prefix and proxies to nginx
-    redir /review /review/ 308
-    handle_path /review/* {
-        reverse_proxy localhost:3200
+    # Paperclip admin UI — served under /admin path
+    redir /admin /admin/ 308
+    handle_path /admin/* {
+        reverse_proxy localhost:3100
     }
 
-    # Paperclip UI — default handler
+    # Demo UI (landing page + pipeline + reviewer) — default handler (home page)
     handle {
-        reverse_proxy localhost:3100 {
-            header_up X-Real-IP {remote_host}
-            header_up X-Forwarded-For {remote_host}
-            header_up X-Forwarded-Proto {scheme}
-        }
+        reverse_proxy localhost:3200
     }
 }
 
