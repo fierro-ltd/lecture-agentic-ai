@@ -52,8 +52,8 @@ docker compose up --build
 ```
 
 ## Ports
-- Paperclip UI: http://localhost:3100
 - Demo UI: http://localhost:3200
+- Paperclip Admin: http://localhost:3100
 - HAST API: http://localhost:8000
 - Temporal UI: http://localhost:8233
 - Hermes Gateway: http://localhost:8642

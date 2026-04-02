@@ -126,8 +126,8 @@ Two scripts run on first PostgreSQL start (via `/docker-entrypoint-initdb.d/`):
 ```mermaid
 graph TD
     Internet["Internet"] --> Caddy["Caddy<br/>:443 TLS"]
-    Caddy -- "app.example.com" --> PAP["Paperclip :3100"]
-    Caddy -- "app.example.com:3200" --> RUI["Reviewer UI :3200"]
+    Caddy -- "app.example.com/" --> RUI["Demo UI :3200"]
+    Caddy -- "app.example.com/admin/" --> PAP["Paperclip Admin :3100"]
     Caddy -- "api.example.com" --> HAST["HAST API :8000"]
     Caddy -- "temporal.example.com" --> TUI["Temporal UI :8233"]
 

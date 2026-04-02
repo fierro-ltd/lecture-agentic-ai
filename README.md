@@ -158,8 +158,8 @@ cp .env.example .env          # Fill in API keys
 docker compose up --build
 
 # 3. Open the UIs
-open http://localhost:3100     # Paperclip (orchestration + org chart)
 open http://localhost:3200     # Demo UI (landing page + live pipeline demo)
+open http://localhost:3100     # Paperclip Admin (orchestration + org chart)
 open http://localhost:8233     # Temporal (workflow visibility)
 ```
 
@@ -167,7 +167,7 @@ open http://localhost:8233     # Temporal (workflow visibility)
 
 | Service | Port | Technology | Purpose |
 |---------|------|-----------|---------|
-| **Paperclip** | 3100 | Node.js / React | Orchestration UI, org chart, governance, budgets |
+| **Paperclip Admin** | 3100 | Node.js / React | Orchestration UI, org chart, governance, budgets |
 | **Hermes Gateway** | 8642 | Python | OpenAI-compatible LLM inference API |
 | **HAST API** | 8000 | Python / FastAPI | Human-in-the-loop review REST API |
 | **HAST Worker** | -- | Python / Temporal SDK | Executes workflow activities |
