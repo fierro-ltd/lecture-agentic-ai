@@ -146,10 +146,10 @@ services:
       - ./hermes/agents:/root/.hermes/agents
       - ./hermes/config.yaml:/root/.hermes/config.yaml
 
-  # === Reviewer Dashboard (standalone SPA) ===
-  reviewer-ui:
+  # === Demo UI (landing page + pipeline + reviewer) ===
+  demo-ui:
     build:
-      context: ./reviewer-ui
+      context: ./demo-ui
       dockerfile: Dockerfile
     ports:
       - "3200:3200"

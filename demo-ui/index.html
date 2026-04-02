@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lecture Agentic AI</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <div class="app-shell">
+
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="sidebar">
+
+      <!-- Brand -->
+      <div class="sidebar-brand">
+        <span class="brand-name">lecture</span>
+        <span class="brand-subtitle">agentic ai</span>
+      </div>
+
+      <!-- User -->
+      <div class="sidebar-user">
+        <div class="avatar" aria-label="Demo User avatar">DM</div>
+        <div class="user-info">
+          <span class="user-name">Demo User</span>
+          <span class="user-org">EDT &amp; Partners</span>
+        </div>
+      </div>
+
+      <!-- Primary navigation -->
+      <nav class="sidebar-nav" aria-label="Main navigation">
+        <ul role="list">
+          <li>
+            <button class="nav-link active" data-section="hero" onclick="showSection('hero')" aria-current="page">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+                <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+              </svg>
+              Overview
+            </button>
+          </li>
+          <li>
+            <button class="nav-link" data-section="demo" onclick="showSection('demo')">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polygon points="5 3 19 12 5 21 5 3"/>
+              </svg>
+              Live Demo
+            </button>
+          </li>
+          <li>
+            <button class="nav-link" data-section="review" onclick="showSection('review')">
+              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+              </svg>
+              Review Queue
+            </button>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Config / connection -->
+      <div class="sidebar-config">
+        <p class="config-heading">Configuration</p>
+        <div class="config-field">
+          <label for="cfgApiUrl">API URL</label>
+          <input id="cfgApiUrl" type="url" placeholder="https://api.example.com" />
+        </div>
+        <div class="config-field">
+          <label for="cfgApiKey">API Key</label>
+          <input id="cfgApiKey" type="password" placeholder="••••••••" />
+        </div>
+        <div class="connection-status">
+          <span class="status-dot" id="statusDot" aria-label="Connection status"></span>
+          <span class="status-label" id="statusLabel">Not connected</span>
+        </div>
+      </div>
+
+    </aside>
+    <!-- /sidebar -->
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="main-content" id="mainContent">
+
+      <!-- ─── SECTION 1: OVERVIEW ─── -->
+      <section id="hero" class="content-section active" aria-labelledby="heroTitle">
+
+        <header class="section-header">
+          <h1 id="heroTitle">Lecture Agentic AI</h1>
+          <p class="section-subtitle">AI-powered evaluation with human governance</p>
+        </header>
+
+        <!-- Hero cards -->
+        <div class="hero-cards" role="list">
+
+          <article class="hero-card" role="listitem">
+            <div class="hero-card-icon" aria-hidden="true">
+              <!-- Robot / AI icon -->
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M12 2a3 3 0 0 1 3 3v6H9V5a3 3 0 0 1 3-3z"/>
+                <circle cx="9" cy="16" r="1" fill="currentColor"/><circle cx="15" cy="16" r="1" fill="currentColor"/>
+                <path d="M12 2v3"/>
+              </svg>
+            </div>
+            <h2 class="hero-card-title">AI Evaluates</h2>
+            <p>A Hermes language agent autonomously analyses submissions against your defined criteria, producing structured scores and detailed reasoning at scale.</p>
+          </article>
+
+          <article class="hero-card" role="listitem">
+            <div class="hero-card-icon" aria-hidden="true">
+              <!-- Scales / governance icon -->
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2v20M3 7l9-5 9 5"/><path d="M6 7l-3 6a3 3 0 0 0 6 0L6 7z"/>
+                <path d="M18 7l-3 6a3 3 0 0 0 6 0L18 7z"/><line x1="3" y1="22" x2="21" y2="22"/>
+              </svg>
+            </div>
+            <h2 class="hero-card-title">Temporal Governs</h2>
+            <p>Temporal workflows enforce durable, auditable pipelines — every step is retried automatically, timed out gracefully, and tracked end-to-end across the entire lifecycle.</p>
+          </article>
+
+          <article class="hero-card" role="listitem">
+            <div class="hero-card-icon" aria-hidden="true">
+              <!-- Teacher / person icon -->
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="7" r="4"/><path d="M5.5 21a8.38 8.38 0 0 1 13 0"/>
+                <path d="M17 14l-2 2-2-2"/><path d="M15 16v5"/>
+              </svg>
+            </div>
+            <h2 class="hero-card-title">Humans Decide</h2>
+            <p>Reviewers receive a structured AI summary and a clear approve / reject / revise interface — keeping humans in control of every consequential decision.</p>
+          </article>
+
+        </div>
+        <!-- /hero-cards -->
+
+        <!-- Flow diagram -->
+        <div class="flow-diagram" role="img" aria-label="Pipeline flow: External System to Paperclip to Hermes Agent to HAST plus Temporal to Human Review">
+          <div class="flow-step">
+            <div class="flow-number" aria-hidden="true">1</div>
+            <div class="flow-label">External System</div>
+          </div>
+          <div class="flow-arrow" aria-hidden="true">
+            <svg viewBox="0 0 24 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="0" y1="4" x2="18" y2="4"/><polyline points="14 1 18 4 14 7"/>
+            </svg>
+          </div>
+          <div class="flow-step">
+            <div class="flow-number" aria-hidden="true">2</div>
+            <div class="flow-label">Paperclip</div>
+          </div>
+          <div class="flow-arrow" aria-hidden="true">
+            <svg viewBox="0 0 24 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="0" y1="4" x2="18" y2="4"/><polyline points="14 1 18 4 14 7"/>
+            </svg>
+          </div>
+          <div class="flow-step">
+            <div class="flow-number" aria-hidden="true">3</div>
+            <div class="flow-label">Hermes Agent</div>
+          </div>
+          <div class="flow-arrow" aria-hidden="true">
+            <svg viewBox="0 0 24 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="0" y1="4" x2="18" y2="4"/><polyline points="14 1 18 4 14 7"/>
+            </svg>
+          </div>
+          <div class="flow-step">
+            <div class="flow-number" aria-hidden="true">4</div>
+            <div class="flow-label">HAST + Temporal</div>
+          </div>
+          <div class="flow-arrow" aria-hidden="true">
+            <svg viewBox="0 0 24 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="0" y1="4" x2="18" y2="4"/><polyline points="14 1 18 4 14 7"/>
+            </svg>
+          </div>
+          <div class="flow-step">
+            <div class="flow-number" aria-hidden="true">5</div>
+            <div class="flow-label">Human Review</div>
+          </div>
+        </div>
+        <!-- /flow-diagram -->
+
+        <div class="hero-cta">
+          <button class="btn btn-primary btn-lg" onclick="showSection('demo')">Try the Live Demo →</button>
+        </div>
+
+      </section>
+      <!-- /hero -->
+
+      <!-- ─── SECTION 2: LIVE DEMO ─── -->
+      <section id="demo" class="content-section" aria-labelledby="demoTitle">
+
+        <header class="section-header">
+          <h1 id="demoTitle">Live Demo</h1>
+          <p class="section-subtitle">Submit content for AI evaluation and track it through the governance pipeline.</p>
+        </header>
+
+        <!-- Demo form card -->
+        <div class="card" id="demoForm">
+          <h2 class="card-title">New Submission</h2>
+
+          <div class="form-group">
+            <label for="submissionContent">Submission Content</label>
+            <textarea id="submissionContent" rows="7" placeholder="Paste or type the content to be evaluated…">The rapid proliferation of large language models presents both significant opportunities and serious risks for knowledge work. On one hand, these systems dramatically lower the cost of producing fluent, coherent text, enabling organisations to scale communication and analysis at unprecedented rates. On the other hand, the same fluency can mask shallow reasoning, factual errors, and unacknowledged uncertainty. Any governance framework must therefore balance the productivity gains of AI-assisted work against the integrity requirements of consequential decisions. This submission argues that human-in-the-loop review, combined with transparent confidence scoring, is the most practical near-term approach.</textarea>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group form-group--grow">
+              <label for="submissionCriteria">Evaluation Criteria</label>
+              <input id="submissionCriteria" type="text" value="clarity, reasoning, evidence, structure" placeholder="e.g. clarity, reasoning, evidence" />
+            </div>
+            <div class="form-group">
+              <label for="submissionType">Submission Type</label>
+              <select id="submissionType">
+                <option value="assessment">Assessment</option>
+                <option value="clinical_review">Clinical Review</option>
+                <option value="compliance">Compliance</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button class="btn btn-primary" id="btnSubmit" onclick="submitDemo()">Submit for AI Evaluation</button>
+          </div>
+        </div>
+        <!-- /demoForm -->
+
+        <!-- Pipeline visualization -->
+        <div class="pipeline" id="pipeline" hidden aria-label="Evaluation pipeline progress">
+          <div class="pipeline-steps">
+
+            <div class="pipeline-step" id="stepSubmitted" data-state="waiting">
+              <div class="pipeline-step-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+              </div>
+              <div class="pipeline-step-body">
+                <span class="pipeline-step-label">Submitted</span>
+                <span class="pipeline-step-desc" id="descSubmitted"></span>
+              </div>
+            </div>
+
+            <div class="pipeline-connector" aria-hidden="true"></div>
+
+            <div class="pipeline-step" id="stepAI" data-state="waiting">
+              <div class="pipeline-step-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="3"/>
+                  <path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
+                </svg>
+              </div>
+              <div class="pipeline-step-body">
+                <span class="pipeline-step-label">AI Evaluation</span>
+                <span class="pipeline-step-desc" id="descAI"></span>
+              </div>
+            </div>
+
+            <div class="pipeline-connector" aria-hidden="true"></div>
+
+            <div class="pipeline-step" id="stepHuman" data-state="waiting">
+              <div class="pipeline-step-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="7" r="4"/><path d="M5.5 21a8.38 8.38 0 0 1 13 0"/>
+                </svg>
+              </div>
+              <div class="pipeline-step-body">
+                <span class="pipeline-step-label">Human Review</span>
+                <span class="pipeline-step-desc" id="descHuman"></span>
+              </div>
+            </div>
+
+            <div class="pipeline-connector" aria-hidden="true"></div>
+
+            <div class="pipeline-step" id="stepComplete" data-state="waiting">
+              <div class="pipeline-step-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                  <polyline points="22 4 12 14.01 9 11.01"/>
+                </svg>
+              </div>
+              <div class="pipeline-step-body">
+                <span class="pipeline-step-label">Complete</span>
+                <span class="pipeline-step-desc" id="descComplete"></span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <!-- /pipeline -->
+
+        <!-- AI evaluation result card -->
+        <div class="card" id="evalCard" hidden>
+          <h2 class="card-title">AI Evaluation</h2>
+          <div id="evalCardBody">
+            <!-- Populated by app.js -->
+          </div>
+        </div>
+
+        <!-- Inline review panel -->
+        <div class="card card--review" id="reviewInline" hidden>
+          <h2 class="card-title">Human Review Decision</h2>
+          <div class="review-actions">
+            <button class="btn btn-approve" id="btnApprove" onclick="submitReview('approved')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+              Approve
+            </button>
+            <button class="btn btn-reject" id="btnReject" onclick="submitReview('rejected')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+              Reject
+            </button>
+            <button class="btn btn-revision" id="btnRevision" onclick="submitReview('revision_requested')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/>
+              </svg>
+              Request Revision
+            </button>
+          </div>
+          <div class="form-group">
+            <label for="reviewNotes">Reviewer Notes <span class="label-optional">(optional)</span></label>
+            <textarea id="reviewNotes" rows="3" placeholder="Add context or instructions for the submitter…"></textarea>
+          </div>
+        </div>
+        <!-- /reviewInline -->
+
+        <!-- Final result card -->
+        <div class="card card--result" id="resultCard" hidden>
+          <h2 class="card-title">Result</h2>
+          <div id="resultCardBody">
+            <!-- Populated by app.js -->
+          </div>
+        </div>
+
+        <!-- New demo button -->
+        <div class="demo-reset" id="btnNewDemoWrap" hidden>
+          <button class="btn btn-secondary" id="btnNewDemo" onclick="resetDemo()">Start New Demo</button>
+        </div>
+
+      </section>
+      <!-- /demo -->
+
+      <!-- ─── SECTION 3: REVIEW QUEUE ─── -->
+      <section id="review" class="content-section" aria-labelledby="reviewTitle">
+
+        <header class="section-header">
+          <h1 id="reviewTitle">Review Queue</h1>
+          <p class="section-subtitle">Pending and completed review decisions across all submissions.</p>
+        </header>
+
+        <div class="review-layout">
+
+          <!-- Left column: filter tabs + list -->
+          <div class="review-list-col">
+
+            <div class="filter-tabs" role="tablist" aria-label="Filter submissions">
+              <button class="filter-tab active" role="tab" aria-selected="true"  data-filter="pending"  onclick="filterReview('pending')">Pending</button>
+              <button class="filter-tab"        role="tab" aria-selected="false" data-filter="approved" onclick="filterReview('approved')">Approved</button>
+              <button class="filter-tab"        role="tab" aria-selected="false" data-filter="rejected" onclick="filterReview('rejected')">Rejected</button>
+              <button class="filter-tab"        role="tab" aria-selected="false" data-filter="all"      onclick="filterReview('all')">All</button>
+            </div>
+
+            <div class="review-list-scroll" role="tabpanel" aria-label="Submission list">
+              <ul class="review-list" id="reviewList" role="list">
+                <!-- Populated by app.js -->
+              </ul>
+            </div>
+
+          </div>
+          <!-- /review-list-col -->
+
+          <!-- Right column: detail panel -->
+          <aside class="review-detail-col" aria-label="Submission detail">
+            <div class="review-detail" id="reviewDetail">
+              <div class="review-detail-placeholder">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                  <polyline points="14 2 14 8 20 8"/>
+                  <line x1="16" y1="13" x2="8" y2="13"/>
+                  <line x1="16" y1="17" x2="8" y2="17"/>
+                  <polyline points="10 9 9 9 8 9"/>
+                </svg>
+                <p>Select a submission from the list to view details.</p>
+              </div>
+            </div>
+          </aside>
+          <!-- /review-detail-col -->
+
+        </div>
+        <!-- /review-layout -->
+
+      </section>
+      <!-- /review -->
+
+    </main>
+    <!-- /main-content -->
+
+  </div>
+  <!-- /app-shell -->
+
+  <!-- Toast container -->
+  <div class="toast-container" id="toastContainer" aria-live="polite" aria-atomic="true">
+    <!-- Toasts injected by app.js -->
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

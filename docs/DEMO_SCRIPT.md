@@ -126,3 +126,25 @@ The default decision is `approved`. To reject or flag instead:
 ### Step 4 — Verify in Temporal UI
 
 Open **http://localhost:8233** and locate the `ReviewWorkflow` run for the submission. It should now show as `Completed`. The workflow received the human signal and progressed to its final state — demonstrating durable execution across the full lifecycle.
+
+## Demo UI Walkthrough
+
+The Demo UI at http://localhost:3200 provides a self-contained demo of the full pipeline.
+
+### Overview
+1. Open http://localhost:3200
+2. Enter API key in the sidebar config
+3. Browse the **Overview** section to understand the architecture
+
+### Live Demo
+4. Click **Live Demo** in the sidebar
+5. The submission form is pre-filled with a sample essay — click **Submit for AI Evaluation**
+6. Watch the pipeline visualization show each step:
+   - 📥 Submitted → 🤖 AI Evaluation → ⚖️ Human Review → ✅ Complete
+7. When the pipeline reaches "Human Review", approve or reject the submission
+8. See the final result with the decision recorded
+
+### Review Queue
+9. Click **Review Queue** in the sidebar to see all submissions
+10. Filter by status: Pending, Approved, Rejected, or All
+11. Click any submission to see its full details and AI evaluation
