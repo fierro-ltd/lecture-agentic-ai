@@ -12,28 +12,128 @@ graph LR
         PAP["Paperclip<br/>:3100"]
     end
 
-    subgraph Agents
+    subgraph "Agent Runtime (inside Paperclip)"
+        HA["Hermes Agent<br/>process"]
+    end
+
+    subgraph "LLM Inference"
         HG["Hermes Gateway<br/>:8642"]
     end
 
-    subgraph Workflows
+    subgraph "Governance Layer"
         HAST["HAST API<br/>:8000"]
         TMP["Temporal<br/>:7233"]
-        TUI["Temporal UI<br/>:8233"]
+        RUI["Reviewer UI<br/>:3200"]
     end
 
     subgraph Data
         PG["PostgreSQL<br/>:5432"]
     end
 
-    PAP -- "hermes_local adapter" --> HG
-    HG -- "skill: assessment-review" --> HAST
-    HAST -- "start/signal" --> TMP
+    PAP -- "1. heartbeat trigger" --> HA
+    HA -- "LLM calls" --> HG
+    HA -- "2. submit evaluation" --> HAST
+    HAST -- "3. start workflow" --> TMP
+    RUI -- "4. human decision" --> HAST
+    HAST -- "5. signal workflow" --> TMP
     TMP --> PG
     HAST --> PG
     PAP --> PG
-    TUI --> TMP
 ```
+
+## How It Works — End-to-End Flow
+
+The platform separates **AI evaluation** (Paperclip + Hermes) from **human governance** (HAST + Temporal). The AI does the heavy lifting; Temporal ensures a human always signs off.
+
+### Step-by-step: From submission to approved grade
+
+```mermaid
+sequenceDiagram
+    participant LMS as External System<br/>(LMS / Webhook)
+    participant PAP as Paperclip
+    participant HA as Hermes Agent<br/>(inside Paperclip)
+    participant HG as Hermes Gateway<br/>(LLM API)
+    participant HAST as HAST API
+    participant TMP as Temporal
+    participant REV as Reviewer<br/>(Professor / Physician)
+
+    LMS->>PAP: 1. Create issue (via Routine webhook or UI)
+    PAP->>HA: 2. Trigger heartbeat → spawn agent process
+    HA->>HG: 3. LLM calls (GLM-5 via OpenCode Go)
+    HG-->>HA: AI evaluation JSON
+    HA->>HAST: 4. POST /api/submissions (with ai_evaluation)
+    HAST->>TMP: 5. Start ReviewWorkflow
+    TMP-->>TMP: 6. Wait for human signal (up to 7 days)
+    Note over TMP: Workflow is durable — survives crashes
+    REV->>HAST: 7. POST /api/submissions/{id}/review (approve/reject)
+    HAST->>TMP: 8. Signal workflow with decision
+    TMP->>HAST: 9. Record decision, complete workflow
+```
+
+### What each layer does
+
+| Layer | Component | Role | Analogy |
+|-------|-----------|------|---------|
+| **Orchestration** | Paperclip | Manages agents, org chart, budgets, scheduling | "The department head who assigns work" |
+| **AI Evaluation** | Hermes Agent (process inside Paperclip) | Reads the submission, applies rubric, produces structured evaluation | "The teaching assistant who grades" |
+| **LLM Inference** | Hermes Gateway | Proxies LLM requests to OpenCode Go GLM-5 | "The brain the TA uses to think" |
+| **Governance** | HAST API + Temporal | Durable workflow: store evaluation, wait for human, record decision | "The compliance office that requires a signature" |
+| **Human Review** | Reviewer Dashboard | UI for professors/reviewers to see AI evaluations and approve/reject | "The professor's desk" |
+| **Data** | PostgreSQL | Three databases: `paperclip` (org), `temporal` (workflow state), `lecture_agent` (submissions) | "The filing cabinet" |
+
+### Key design decisions
+
+**Why doesn't Temporal call the AI?** In the original [HAST template](https://github.com/fierro-ltd/hermes-agent-solution-template), the Temporal workflow runs `evaluate_submission` as an activity. In lecture-agentic-ai, the AI evaluation moves to Paperclip's agent layer because:
+
+1. **Paperclip governs the agent** — budget limits, heartbeat scheduling, run transcripts, and skill selection are all Paperclip features. Running evaluation inside Temporal would bypass this governance.
+2. **Agents need context** — A Hermes agent can read the issue description, check related issues, search its memory, and use multiple tools. A Temporal activity just calls an LLM endpoint.
+3. **Temporal stays thin** — The workflow only handles what needs durability: waiting for human review (up to 7 days), surviving crashes, and recording the final decision. This makes it simpler and more reliable.
+
+The `evaluate_submission` activity still exists in the HAST worker as a **fallback** — it fires only if someone submits to the HAST API without a pre-computed `ai_evaluation`. In the normal Paperclip flow, the agent always provides one.
+
+### Container architecture
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    Docker Compose Network                    │
+│                                                             │
+│  ┌──────────────────┐   ┌──────────────────┐               │
+│  │    Paperclip      │   │  Hermes Gateway   │               │
+│  │    :3100          │   │  :8642             │               │
+│  │                   │   │                    │               │
+│  │  ┌─────────────┐ │   │  OpenAI-compatible │               │
+│  │  │Hermes Agent │ │──▶│  LLM proxy         │──▶ OpenCode Go│
+│  │  │ (process)   │ │   │  (GLM-5 inference) │   (external)  │
+│  │  └──────┬──────┘ │   └──────────────────┘               │
+│  └─────────┼────────┘                                       │
+│            │ POST /api/submissions                           │
+│            ▼                                                 │
+│  ┌──────────────────┐   ┌──────────────────┐               │
+│  │    HAST API       │   │    HAST Worker     │               │
+│  │    :8000          │   │   (Temporal SDK)   │               │
+│  │                   │──▶│                    │               │
+│  │  FastAPI + Auth   │   │  Runs activities   │               │
+│  └────────┬──────────┘   └────────┬──────────┘               │
+│           │                       │                          │
+│           ▼                       ▼                          │
+│  ┌──────────────────┐   ┌──────────────────┐               │
+│  │   PostgreSQL      │   │    Temporal        │               │
+│  │   :5432           │   │    :7233           │               │
+│  │                   │   │                    │               │
+│  │  lecture_agent DB │   │  Workflow state    │               │
+│  │  paperclip DB     │   │  Durable signals  │               │
+│  │  temporal DB      │   │  7-day timeouts   │               │
+│  └──────────────────┘   └──────────────────┘               │
+│                                                             │
+│  ┌──────────────────┐   ┌──────────────────┐               │
+│  │  Reviewer UI      │   │  Temporal UI       │               │
+│  │  :3200            │   │  :8233             │               │
+│  │  (nginx + SPA)    │   │  (workflow viewer) │               │
+│  └──────────────────┘   └──────────────────┘               │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**Important:** The Hermes Agent runs as a **process inside the Paperclip container**, not as a separate container. Paperclip's `hermes_local` adapter spawns agent processes on heartbeat. The Hermes Gateway is a separate container that only proxies LLM API calls — it does not run agents.
 
 ## Cross-Industry Platform
 
@@ -168,7 +268,11 @@ No, it supports both modes:
 
 ### How does HAST fit in?
 
-HAST (Hermes Agent Solution Template) provides the **human-in-the-loop workflow layer**. When an AI agent evaluates a student submission, it submits the evaluation to HAST which starts a Temporal workflow. The workflow waits up to 7 days for a professor to approve, reject, or request revision. This ensures AI never makes final academic decisions.
+HAST provides the **governance layer** — it does NOT run the AI evaluation. The Paperclip agent evaluates the submission and POSTs the result to the HAST API with `ai_evaluation` already computed. HAST then starts a Temporal workflow that durably waits (up to 7 days) for a human to approve, reject, or request revision. This separation means Paperclip governs the AI (budgets, skills, scheduling) while Temporal governs the human (deadlines, audit trail, crash recovery).
+
+### Why doesn't Temporal run the AI evaluation?
+
+In the original [HAST template](https://github.com/fierro-ltd/hermes-agent-solution-template), the Temporal workflow calls `evaluate_submission` as an activity. In lecture-agentic-ai, that step moved to Paperclip's agent layer because agents need Paperclip's governance: budget limits, heartbeat scheduling, tool access, and run transcripts. Temporal stays thin — it only handles what needs durability (waiting for humans). The `evaluate_submission` activity still exists as a fallback for direct API submissions without a pre-computed evaluation.
 
 ---
 
