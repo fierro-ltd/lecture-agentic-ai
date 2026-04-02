@@ -62,6 +62,10 @@ function defaultApiUrl() {
   return proto + '//' + host + ':' + port;
 }
 
+function defaultApiKey() {
+  return 'edu-platform-test-key-2026';
+}
+
 function debounce(fn, ms) {
   var timer;
   return function () {
@@ -695,10 +699,8 @@ document.addEventListener('DOMContentLoaded', function () {
   apiUrlInput.value = defaultApiUrl();
 
   var apiKeyInput = document.getElementById('cfgApiKey');
-  var savedKey    = sessionStorage.getItem('hastApiKey');
-  if (savedKey) {
-    apiKeyInput.value = savedKey;
-  }
+  var savedKey = sessionStorage.getItem('hastApiKey');
+  apiKeyInput.value = savedKey || defaultApiKey();
 
   apiKeyInput.addEventListener('input', function () {
     sessionStorage.setItem('hastApiKey', apiKeyInput.value);

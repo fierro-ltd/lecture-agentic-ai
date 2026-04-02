@@ -56,6 +56,10 @@
               Review Queue
             </button>
           </li>
+          <li><button class="nav-link" data-section="docs" onclick="showSection('docs')" aria-label="Documentation">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+            <span class="nav-text">Docs</span>
+          </button></li>
         </ul>
       </nav>
 
@@ -393,6 +397,104 @@
 
       </section>
       <!-- /review -->
+
+      <!-- ===== SECTION 4 — DOCUMENTATION ===== -->
+      <section id="docs" class="content-section">
+        <div class="section-header">
+          <h1 class="section-title">Documentation</h1>
+          <p class="section-subtitle">Integration guides and API reference</p>
+        </div>
+
+        <div class="docs-grid">
+          <div class="card docs-card">
+            <h3>Quick Start</h3>
+            <p>Get the platform running locally in 3 commands:</p>
+            <pre class="docs-code"><code>git clone &lt;repo-url&gt; &amp;&amp; cd lecture-agentic-ai
+cp .env.example .env    # Fill in API keys
+docker compose up --build</code></pre>
+            <p>Services will be available at:</p>
+            <ul class="docs-list">
+              <li><strong>Demo UI</strong> — <code>http://localhost:3200</code></li>
+              <li><strong>Paperclip Admin</strong> — <code>http://localhost:3100</code></li>
+              <li><strong>HAST API</strong> — <code>http://localhost:8000</code></li>
+              <li><strong>Temporal UI</strong> — <code>http://localhost:8233</code></li>
+            </ul>
+          </div>
+
+          <div class="card docs-card">
+            <h3>LMS Integration</h3>
+            <p>Connect your Learning Management System to submit evaluations automatically:</p>
+            <pre class="docs-code"><code>POST /api/submissions
+Authorization: Bearer $HAST_API_KEY
+Content-Type: application/json
+
+{
+  "submission_type": "assessment",
+  "entity_id": "student-12345",
+  "content": "Essay text here...",
+  "criteria": "Rubric criteria...",
+  "context": {"course_id": "CS-101"}
+}</code></pre>
+            <p>The submission enters a Temporal workflow and waits for human review. Poll <code>GET /api/submissions/{id}</code> for status updates.</p>
+          </div>
+
+          <div class="card docs-card">
+            <h3>Review Decision API</h3>
+            <p>Approve, reject, or request revision on any pending submission:</p>
+            <pre class="docs-code"><code>POST /api/submissions/{id}/review
+Authorization: Bearer $HAST_API_KEY
+Content-Type: application/json
+
+{
+  "decision": "approved",
+  "reviewer_notes": "Well-structured analysis.",
+  "adjusted_score": 85
+}</code></pre>
+            <p>Valid decisions: <code>approved</code>, <code>rejected</code>, <code>revision_requested</code></p>
+          </div>
+
+          <div class="card docs-card">
+            <h3>Webhook Notifications</h3>
+            <p>Get notified when submissions are ready for review or about to expire:</p>
+            <pre class="docs-code"><code># Set in .env or docker-compose.yml:
+NOTIFICATION_WEBHOOK_URL=https://your-system.com/webhook
+
+# Payload sent on review_ready:
+{
+  "event": "review_ready",
+  "submission_id": "abc-123",
+  "deadline": "2026-04-08T12:00:00",
+  "review_url": "/submissions/abc-123"
+}</code></pre>
+          </div>
+
+          <div class="card docs-card">
+            <h3>Architecture</h3>
+            <p>The platform separates AI evaluation from human governance:</p>
+            <ol class="docs-list">
+              <li><strong>External System</strong> — LMS, portal, or API sends a submission</li>
+              <li><strong>Paperclip</strong> — Creates issue, triggers agent heartbeat</li>
+              <li><strong>Hermes Agent</strong> — Evaluates using AI (GLM-5), produces structured feedback</li>
+              <li><strong>HAST + Temporal</strong> — Durable workflow waits for human approval (up to 7 days)</li>
+              <li><strong>Human Review</strong> — Approve, reject, or request revision</li>
+            </ol>
+            <p>See <a href="https://github.com/fierro-ltd/lecture-agentic-ai" target="_blank">GitHub repository</a> for full documentation.</p>
+          </div>
+
+          <div class="card docs-card">
+            <h3>Company Templates</h3>
+            <p>Deploy with industry-specific agent configurations:</p>
+            <table class="docs-table">
+              <thead><tr><th>Industry</th><th>Template</th><th>Agents</th></tr></thead>
+              <tbody>
+                <tr><td>Education</td><td><code>higher-ed</code></td><td>Assessment Quality, Curriculum Compliance, Knowledge Curator</td></tr>
+                <tr><td>Healthcare</td><td><code>healthcare</code></td><td>Documentation Quality, Healthcare Compliance</td></tr>
+                <tr><td>Government</td><td><em>planned</em></td><td><em>planned</em></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
 
     </main>
     <!-- /main-content -->
