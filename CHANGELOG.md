@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.12.0 — Demo UI (2026-04-02)
+
+- **Demo UI** — Replaced standalone reviewer dashboard with unified demo app at `:3200`. Three sections: Overview (product explainer + flow diagram), Live Demo (submit → watch pipeline → review), Review Queue (all submissions with filters). Styled to match Lecture's visual language.
+- **Removed** `reviewer-ui/` — superseded by `demo-ui/`
+
 ## v0.11.0 — Stabilize & Complete the Loop (2026-04-01)
 
 ### Infrastructure Hardening (Phase 1)

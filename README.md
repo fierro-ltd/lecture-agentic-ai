@@ -23,7 +23,7 @@ graph LR
     subgraph "Governance Layer"
         HAST["HAST API<br/>:8000"]
         TMP["Temporal<br/>:7233"]
-        RUI["Reviewer UI<br/>:3200"]
+        RUI["Demo UI<br/>:3200"]
     end
 
     subgraph Data
@@ -126,7 +126,7 @@ The `evaluate_submission` activity still exists in the HAST worker as a **fallba
 │  └──────────────────┘   └──────────────────┘               │
 │                                                             │
 │  ┌──────────────────┐   ┌──────────────────┐               │
-│  │  Reviewer UI      │   │  Temporal UI       │               │
+│  │  Demo UI          │   │  Temporal UI       │               │
 │  │  :3200            │   │  :8233             │               │
 │  │  (nginx + SPA)    │   │  (workflow viewer) │               │
 │  └──────────────────┘   └──────────────────┘               │
@@ -159,7 +159,7 @@ docker compose up --build
 
 # 3. Open the UIs
 open http://localhost:3100     # Paperclip (orchestration + org chart)
-open http://localhost:3200     # Reviewer Dashboard (pending reviews)
+open http://localhost:3200     # Demo UI (landing page + live pipeline demo)
 open http://localhost:8233     # Temporal (workflow visibility)
 ```
 
@@ -171,7 +171,7 @@ open http://localhost:8233     # Temporal (workflow visibility)
 | **Hermes Gateway** | 8642 | Python | OpenAI-compatible LLM inference API |
 | **HAST API** | 8000 | Python / FastAPI | Human-in-the-loop review REST API |
 | **HAST Worker** | -- | Python / Temporal SDK | Executes workflow activities |
-| **Reviewer Dashboard** | 3200 | HTML / JS / nginx | Human reviewer UI for pending submissions |
+| **Demo UI** | 3200 | HTML / JS / nginx | Landing page, pipeline demo, reviewer dashboard |
 | **Temporal Server** | 7233 | Go | Durable workflow orchestration |
 | **Temporal UI** | 8233 | TypeScript / React | Workflow visibility dashboard |
 | **PostgreSQL** | 5432 | PostgreSQL 17 | Shared database (3 databases) |
