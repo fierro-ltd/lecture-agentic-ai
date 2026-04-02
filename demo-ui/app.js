@@ -9,7 +9,7 @@
 var state = {
   submissions: [],
   selectedId: null,
-  currentFilter: 'review',
+  currentFilter: 'pending',
   demoSubmissionId: null,
   pollTimer: null,
   submitting: false,
@@ -462,7 +462,7 @@ function resetDemo() {
    --------------------------------------------------------------------------- */
 
 function loadReviewQueue(filter) {
-  state.currentFilter = filter || 'review';
+  state.currentFilter = filter || 'pending';
   var list = document.getElementById('reviewList');
   list.innerHTML = '<li class="review-list-loading">Loading\u2026</li>';
 
@@ -509,7 +509,7 @@ function renderReviewList(items) {
 
     return (
       '<li class="review-list-item" role="listitem">' +
-      '<button class="review-list-btn" onclick="selectReviewSubmission(\'' + safeId + '\')" ' +
+      '<button class="review-list-btn" data-action="select" data-id="' + safeId + '" ' +
       'aria-label="View submission ' + escHtml(sub.entity_id || sub.id) + '">' +
       '<div class="review-list-row">' +
       '<span class="badge ' + badgeClass + '">' + escHtml(statusLabel) + '</span>' +
@@ -586,9 +586,9 @@ function renderReviewDetail(sub) {
       '<div class="detail-section detail-actions">' +
       '<h3>Submit Review</h3>' +
       '<div class="review-actions">' +
-      '<button class="btn btn-approve"   onclick="submitQueueReview(\'' + safeId + '\', \'approved\')">Approve</button>' +
-      '<button class="btn btn-reject"    onclick="submitQueueReview(\'' + safeId + '\', \'rejected\')">Reject</button>' +
-      '<button class="btn btn-revision"  onclick="submitQueueReview(\'' + safeId + '\', \'revision_requested\')">Request Revision</button>' +
+      '<button class="btn btn-approve"   data-action="review" data-id="' + safeId + '" data-decision="approved">Approve</button>' +
+      '<button class="btn btn-reject"    data-action="review" data-id="' + safeId + '" data-decision="rejected">Reject</button>' +
+      '<button class="btn btn-revision"  data-action="review" data-id="' + safeId + '" data-decision="revision_requested">Request Revision</button>' +
       '</div>' +
       '<div class="form-group" style="margin-top:0.75rem;">' +
       '<label for="queueReviewNotes">Reviewer Notes <span class="label-optional">(optional)</span></label>' +
@@ -695,13 +695,13 @@ document.addEventListener('DOMContentLoaded', function () {
   apiUrlInput.value = defaultApiUrl();
 
   var apiKeyInput = document.getElementById('cfgApiKey');
-  var savedKey    = localStorage.getItem('hastApiKey');
+  var savedKey    = sessionStorage.getItem('hastApiKey');
   if (savedKey) {
     apiKeyInput.value = savedKey;
   }
 
   apiKeyInput.addEventListener('input', function () {
-    localStorage.setItem('hastApiKey', apiKeyInput.value);
+    sessionStorage.setItem('hastApiKey', apiKeyInput.value);
   });
 
   var contentArea = document.getElementById('submissionContent');
@@ -712,6 +712,18 @@ document.addEventListener('DOMContentLoaded', function () {
   var debouncedTest = debounce(testConnection, 600);
   apiUrlInput.addEventListener('input', debouncedTest);
   apiKeyInput.addEventListener('input', debouncedTest);
+
+  // Delegated event listeners for review list (XSS-safe, no inline onclick)
+  document.getElementById('reviewList').addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-action="select"]');
+    if (btn) selectReviewSubmission(btn.dataset.id);
+  });
+
+  // Delegated event listeners for review detail actions
+  document.getElementById('reviewDetail').addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-action="review"]');
+    if (btn) submitQueueReview(btn.dataset.id, btn.dataset.decision);
+  });
 
   testConnection();
 });
