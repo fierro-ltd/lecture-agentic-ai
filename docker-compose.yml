@@ -128,7 +128,7 @@ services:
       # 127.0.0.1 binding inside the container, which is incompatible with
       # Docker port-mapping + a reverse proxy. So we stay in authenticated
       # mode and the seed-instructions one-shot provisions a public demo
-      # account (demo@example.com / demo12345).
+      # account (demo@example.com / demo@example.com).
       - PAPERCLIP_DEPLOYMENT_MODE=authenticated
       - PAPERCLIP_DEPLOYMENT_EXPOSURE=public
       - PAPERCLIP_PUBLIC_URL=${PAPERCLIP_PUBLIC_URL:-http://localhost:3100}

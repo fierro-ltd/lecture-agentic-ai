@@ -38,7 +38,7 @@ AGENTS_DIR = pathlib.Path(os.environ.get("AGENTS_DIR", "/agents"))
 # Demo account auto-provisioning. Public demo, no real auth required.
 PAPERCLIP_URL = os.environ.get("PAPERCLIP_URL", "http://paperclip:3100")
 DEMO_EMAIL = os.environ.get("DEMO_EMAIL", "demo@example.com")
-DEMO_PASSWORD = os.environ.get("DEMO_PASSWORD", "demo12345")
+DEMO_PASSWORD = os.environ.get("DEMO_PASSWORD", "demo@example.com")
 DEMO_NAME = os.environ.get("DEMO_NAME", "Demo User")
 
 # Retry settings — Paperclip runs migrations on first boot, which takes time.

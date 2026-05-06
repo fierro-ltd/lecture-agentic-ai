@@ -129,7 +129,7 @@ A live demo is hosted at <https://lecture-agentic-ai.fierro.co.uk>.
   | Field | Value |
   |---|---|
   | Email | `demo@example.com` |
-  | Password | `demo12345` |
+  | Password | `demo@example.com` |
 
   Not a secret — anyone visiting the demo can use them. None of this is
   suitable for a production deployment.
