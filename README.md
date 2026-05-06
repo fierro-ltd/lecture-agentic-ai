@@ -118,16 +118,11 @@ Then open:
 
 A live demo is hosted at <https://lecture-agentic-ai.fierro.co.uk>.
 
-The Orchestrator Admin requires a sign-in. The stack provisions a public
-demo account on first boot:
-
-| Field | Value |
-|---|---|
-| Email | `demo@example.com` |
-| Password | `demo12345` |
-
-These are not secrets — they are auto-created so anyone visiting the demo can
-get past the login screen.
+**Auth is intentionally off everywhere.** The Orchestrator runs in
+`local_trusted` mode (no login screen), Temporal UI is unprotected, and HAST's
+`/docs` and `/health` are open. The HAST `/api/*` endpoints accept the public
+demo bearer key `edu-platform-test-key-2026`. None of this is suitable for a
+production deployment — it is a public capability demo, not a service.
 
 ---
 
