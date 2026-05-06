@@ -1,0 +1,86 @@
+{
+  "name": "Lecture AI Operations Center",
+  "goal": "Extend the Lecture platform with autonomous AI agents that ensure academic quality, operational efficiency, and regulatory compliance across all institutional processes.",
+  "agents": [
+    {
+      "name": "AI Operations Director",
+      "role": "CEO",
+      "title": "AI Operations Director",
+      "adapterType": "hermes_local",
+      "adapterConfig": {
+        "model": "glm-5",
+        "provider": "opencode-go",
+        "maxIterations": 30,
+        "timeoutSec": 300,
+        "persistSession": true,
+        "enabledToolsets": ["terminal", "file", "web", "memory"]
+      },
+      "soulMdPath": "hermes/agents/ai-ops-director/SOUL.md",
+      "promptTemplatePath": "hermes/agents/prompt-templates/heartbeat-ceo.md",
+      "capabilities": "Strategic coordination of all AI operations. Decomposes institutional goals into projects and tasks. Delegates to specialized agents. Reviews cross-functional work. Reads SOUL.md on every heartbeat for lane boundaries and reporting format.",
+      "monthlyBudgetCents": 5000,
+      "heartbeatSchedule": "0 */4 * * *",
+      "reports": []
+    },
+    {
+      "name": "Assessment Quality Agent",
+      "role": "Engineer",
+      "title": "Assessment Quality Specialist",
+      "adapterType": "hermes_local",
+      "adapterConfig": {
+        "model": "glm-5",
+        "provider": "opencode-go",
+        "maxIterations": 50,
+        "timeoutSec": 600,
+        "persistSession": true,
+        "enabledToolsets": ["terminal", "file", "web", "memory"]
+      },
+      "soulMdPath": "hermes/agents/assessment-quality/SOUL.md",
+      "promptTemplatePath": "hermes/agents/prompt-templates/heartbeat-specialist.md",
+      "capabilities": "Evaluates student submissions against rubrics. Produces structured JSON feedback with scores, strengths, weaknesses. Routes evaluations for professor review via HAST workflow. Uses the assessment-review skill. Follows SOUL.md lane constraints on every heartbeat.",
+      "monthlyBudgetCents": 3000,
+      "heartbeatSchedule": "0 */2 * * *",
+      "reportsTo": "AI Operations Director"
+    },
+    {
+      "name": "Curriculum Compliance Agent",
+      "role": "Engineer",
+      "title": "Curriculum Compliance Specialist",
+      "adapterType": "hermes_local",
+      "adapterConfig": {
+        "model": "glm-5",
+        "provider": "opencode-go",
+        "maxIterations": 30,
+        "timeoutSec": 300,
+        "persistSession": true,
+        "enabledToolsets": ["terminal", "file", "web", "memory"]
+      },
+      "soulMdPath": "hermes/agents/curriculum-compliance/SOUL.md",
+      "promptTemplatePath": "hermes/agents/prompt-templates/heartbeat-specialist.md",
+      "capabilities": "Reviews syllabi and course materials against accreditation standards (ANECA, SACSCOC, QAA, ABET, AACSB). Maps learning objectives to competency standards. Identifies compliance gaps. Follows SOUL.md lane constraints on every heartbeat.",
+      "monthlyBudgetCents": 2000,
+      "heartbeatSchedule": "0 8 * * 1",
+      "reportsTo": "AI Operations Director"
+    },
+    {
+      "name": "Knowledge Curator Agent",
+      "role": "Engineer",
+      "title": "Knowledge Augmentation Specialist",
+      "adapterType": "hermes_local",
+      "adapterConfig": {
+        "model": "glm-5",
+        "provider": "opencode-go",
+        "maxIterations": 30,
+        "timeoutSec": 300,
+        "persistSession": true,
+        "enabledToolsets": ["terminal", "file", "web", "memory"]
+      },
+      "soulMdPath": "hermes/agents/knowledge-curator/SOUL.md",
+      "promptTemplatePath": "hermes/agents/prompt-templates/heartbeat-specialist.md",
+      "capabilities": "Maintains institutional knowledge graph using EDT's KAG pattern. Curates relationships between courses, standards, policies, and faculty. Answers queries with relational context. Follows SOUL.md lane constraints on every heartbeat.",
+      "monthlyBudgetCents": 2000,
+      "heartbeatSchedule": "0 6 * * *",
+      "reportsTo": "AI Operations Director"
+    }
+  ]
+}
