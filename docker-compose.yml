@@ -124,8 +124,8 @@ services:
       - DATABASE_URL=postgres://${POSTGRES_USER:-lecture}:${POSTGRES_PASSWORD:-lecture_dev}@postgres:5432/paperclip
       - PORT=3100
       - SERVE_UI=true
-      - PAPERCLIP_DEPLOYMENT_MODE=authenticated
-      - PAPERCLIP_DEPLOYMENT_EXPOSURE=private
+      - PAPERCLIP_DEPLOYMENT_MODE=local_trusted
+      - PAPERCLIP_DEPLOYMENT_EXPOSURE=public
       - PAPERCLIP_PUBLIC_URL=${PAPERCLIP_PUBLIC_URL:-http://localhost:3100}
       - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET:-lecture-agentic-ai-dev-secret-32chars-min}
       - OPENCODE_GO_API_KEY=${OPENCODE_GO_API_KEY}
