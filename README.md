@@ -118,11 +118,21 @@ Then open:
 
 A live demo is hosted at <https://lecture-agentic-ai.fierro.co.uk>.
 
-**Auth is intentionally off everywhere.** The Orchestrator runs in
-`local_trusted` mode (no login screen), Temporal UI is unprotected, and HAST's
-`/docs` and `/health` are open. The HAST `/api/*` endpoints accept the public
-demo bearer key `edu-platform-test-key-2026`. None of this is suitable for a
-production deployment — it is a public capability demo, not a service.
+**Auth is intentionally minimal.**
+- Demo UI, Temporal UI, and HAST `/docs` are open.
+- HAST `/api/*` accepts the public demo bearer key `edu-platform-test-key-2026`.
+- The Orchestrator Admin still requires a sign-in (Paperclip's
+  `local_trusted` mode requires loopback binding, which is incompatible with
+  Docker port-mapping behind a reverse proxy). The stack auto-provisions a
+  public demo account on first boot:
+
+  | Field | Value |
+  |---|---|
+  | Email | `demo@example.com` |
+  | Password | `demo12345` |
+
+  Not a secret — anyone visiting the demo can use them. None of this is
+  suitable for a production deployment.
 
 ---
 
