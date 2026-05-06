@@ -13,10 +13,13 @@ Strategy:
   4. UPDATE the instructions column — safe to re-run (idempotent).
 """
 
+import json
 import os
 import re
 import sys
 import time
+import urllib.error
+import urllib.request
 import pathlib
 
 import psycopg2
@@ -31,6 +34,12 @@ DATABASE_URL = os.environ.get(
     "postgresql://lecture:lecture_dev@postgres:5432/paperclip",
 )
 AGENTS_DIR = pathlib.Path(os.environ.get("AGENTS_DIR", "/agents"))
+
+# Demo account auto-provisioning. Public demo, no real auth required.
+PAPERCLIP_URL = os.environ.get("PAPERCLIP_URL", "http://paperclip:3100")
+DEMO_EMAIL = os.environ.get("DEMO_EMAIL", "demo@example.com")
+DEMO_PASSWORD = os.environ.get("DEMO_PASSWORD", "demo12345")
+DEMO_NAME = os.environ.get("DEMO_NAME", "Demo User")
 
 # Retry settings — Paperclip runs migrations on first boot, which takes time.
 MAX_RETRIES = 30
@@ -195,10 +204,53 @@ def seed(conn, table: str, name_col: str, instr_col: str, souls: dict[str, str])
 # Main
 # ---------------------------------------------------------------------------
 
+def ensure_demo_account() -> None:
+    """
+    Idempotently create the public demo account on the orchestrator.
+
+    Polls the auth-ok probe first so we know the server is up, then POSTs
+    a sign-up. If the user already exists, the orchestrator returns 4xx
+    and we just move on — re-running this is safe.
+    """
+    ok_url = f"{PAPERCLIP_URL.rstrip('/')}/api/auth/ok"
+    signup_url = f"{PAPERCLIP_URL.rstrip('/')}/api/auth/sign-up/email"
+
+    for attempt in range(1, 31):
+        try:
+            with urllib.request.urlopen(ok_url, timeout=5) as resp:
+                if resp.status == 200:
+                    break
+        except (urllib.error.URLError, urllib.error.HTTPError, ConnectionError) as exc:
+            if attempt == 30:
+                print(f"[seed] auth-ok probe never returned 200: {exc} — skipping demo account")
+                return
+            time.sleep(2)
+
+    body = json.dumps({"email": DEMO_EMAIL, "password": DEMO_PASSWORD, "name": DEMO_NAME}).encode()
+    req = urllib.request.Request(
+        signup_url,
+        data=body,
+        method="POST",
+        headers={"Content-Type": "application/json", "Origin": PAPERCLIP_URL},
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            print(f"[seed] Demo account ensured ({DEMO_EMAIL}) — HTTP {resp.status}")
+    except urllib.error.HTTPError as exc:
+        # Existing account → 4xx. Treat as success.
+        msg = exc.read().decode("utf-8", errors="replace")[:200]
+        print(f"[seed] Demo account already exists or signup rejected (HTTP {exc.code}): {msg}")
+    except Exception as exc:
+        print(f"[seed] Demo account creation failed: {exc!r}")
+
+
 def main() -> None:
     print("[seed] Starting SOUL.md seeding…")
     print(f"[seed] AGENTS_DIR = {AGENTS_DIR}")
-    print(f"[seed] DATABASE_URL = {DATABASE_URL.split('@')[-1]}")  # hide credentials
+    print(f"[seed] DATABASE_URL = {DATABASE_URL.split('@')[-1]}")
+    print(f"[seed] PAPERCLIP_URL = {PAPERCLIP_URL}")
+
+    ensure_demo_account()  # hide credentials
 
     souls = load_souls(AGENTS_DIR)
     if not souls:

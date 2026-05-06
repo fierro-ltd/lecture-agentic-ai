@@ -118,6 +118,17 @@ Then open:
 
 A live demo is hosted at <https://lecture-agentic-ai.fierro.co.uk>.
 
+The Orchestrator Admin requires a sign-in. The stack provisions a public
+demo account on first boot:
+
+| Field | Value |
+|---|---|
+| Email | `demo@example.com` |
+| Password | `demo12345` |
+
+These are not secrets — they are auto-created so anyone visiting the demo can
+get past the login screen.
+
 ---
 
 ## Services
